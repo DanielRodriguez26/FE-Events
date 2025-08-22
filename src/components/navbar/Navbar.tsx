@@ -29,7 +29,7 @@ const Navbar = () => {
 							Inicio
 						</Link>
 						<Link
-							to="/eventos"
+							to="/events"
 							className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
 						>
 							Eventos
@@ -57,7 +57,7 @@ const Navbar = () => {
 						{isAuthenticated ? (
 							<div className="flex items-center space-x-4">
 								<span className="text-sm text-gray-700 dark:text-gray-300">
-									Hola, {user?.name || 'Usuario'}
+									Hola, {user?.first_name + ' ' + user?.last_name || 'Usuario'}
 								</span>
 								<button
 									onClick={logout}
@@ -113,7 +113,7 @@ const Navbar = () => {
 								Inicio
 							</Link>
 							<Link
-								to="/eventos"
+								to="/events"
 								className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
 								onClick={() => setIsMenuOpen(false)}
 							>

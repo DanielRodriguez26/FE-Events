@@ -1,4 +1,4 @@
-import type { IEventDto } from "@/domain/home/home.interface";
+import type { IEventDto } from "@/domain/event/event.interface";
 import Paginator from "../paginator";
 
 interface CardEventProps {

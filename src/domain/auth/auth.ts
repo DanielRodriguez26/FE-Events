@@ -20,10 +20,12 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 
 	// Acciones
 	login: async (credentials: ILoginCredentials) => {
+
 		set({ isLoading: true, error: null });
 		
 		try {
 			const response = await loginUser(credentials);
+
 			
 			set({
 				user: response.user,
@@ -34,8 +36,21 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 				error: null,
 			});
 			
+			// Verificar que el estado se actualizó correctamente
+			const updatedState = useStore.getState();
+			console.log('✅ Estado después de actualizar:', {
+				user: updatedState.user,
+				token: updatedState.token,
+				isAuthenticated: updatedState.isAuthenticated
+			});
+			
+			// Verificar que los datos se guardaron en localStorage
+			const storedData = localStorage.getItem('my-even-storage');
+			console.log('✅ Datos en localStorage:', storedData ? JSON.parse(storedData) : 'No hay datos');
+			
 			return true;
 		} catch (error) {
+			console.error('❌ Error en login store:', error);
 			const errorMessage = error instanceof Error ? error.message : 'Error de autenticación';
 			set({
 				isLoading: false,
@@ -46,10 +61,12 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 	},
 
 	register: async (credentials: IRegisterCredentials) => {
+		console.log('🔍 Iniciando proceso de registro...');
 		set({ isLoading: true, error: null });
 		
 		try {
 			const response = await registerUser(credentials);
+			console.log('✅ Registro exitoso, actualizando estado:', response);
 			
 			set({
 				user: response.user,
@@ -60,8 +77,21 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 				error: null,
 			});
 			
+			// Verificar que el estado se actualizó correctamente
+			const updatedState = useStore.getState();
+			console.log('✅ Estado después del registro:', {
+				user: updatedState.user,
+				token: updatedState.token,
+				isAuthenticated: updatedState.isAuthenticated
+			});
+			
+			// Verificar que los datos se guardaron en localStorage
+			const storedData = localStorage.getItem('my-even-storage');
+			console.log('✅ Datos en localStorage después del registro:', storedData ? JSON.parse(storedData) : 'No hay datos');
+			
 			return true;
 		} catch (error) {
+			console.error('❌ Error en registro store:', error);
 			const errorMessage = error instanceof Error ? error.message : 'Error de registro';
 			set({
 				isLoading: false,

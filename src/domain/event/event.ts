@@ -1,8 +1,8 @@
 import type { SetState } from 'zustand';
 import { eventServices } from '@domain/event/event.service';
 import type { MyEvenState } from '@store/store';
-import type { IPaginatedEventsResponse } from '@domain/home/home.interface';
-import type { IEventDto } from '@domain/home/home.interface';
+import type { IPaginatedEventsResponse } from '@domain/event/event.interface';
+import type { IEventDto } from '@domain/event/event.interface';
 
 // El estado inicial debe coincidir con la interfaz de la tienda/slice.
 const createEventInitialState = {

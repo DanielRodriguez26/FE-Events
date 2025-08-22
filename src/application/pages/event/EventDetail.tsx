@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '@/application/layout/Layout';
 import useStore from '@store/store';
-import type { IEventDto } from '@domain/home/home.interface';
 
 const EventDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -131,11 +130,8 @@ const EventDetail: React.FC = () => {
 
                         {/* Botones de acción */}
                         <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                            <button className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                            <button onClick={() => navigate(`/events/register/${eventById.id}`)} className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                                 Inscribirse al Evento
-                            </button>
-                            <button className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                                Compartir Evento
                             </button>
                         </div>
                     </div>

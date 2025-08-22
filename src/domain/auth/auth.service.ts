@@ -1,6 +1,6 @@
 import { post } from '../settings/http.service';
 import { BACKEND_ENDPOINTS } from '../settings/backend.config';
-import type { ILoginCredentials, IRegisterCredentials, IAuthResponse } from './auth.interface';
+import type { ILoginCredentials, IRegisterCredentials, IAuthResponse, IBackendAuthResponse } from './auth.interface';
 
 // Endpoints de autenticación
 
@@ -11,15 +11,48 @@ import type { ILoginCredentials, IRegisterCredentials, IAuthResponse } from './a
 // Función para iniciar sesión
 export const loginUser = async (credentials: ILoginCredentials): Promise<IAuthResponse> => {
 	try {
-		console.log('🔍 Intentando iniciar sesión con:', credentials);
-		const response = await post<IAuthResponse>({
+
+		const response = await post<IBackendAuthResponse>({
 			url: '',
 			baseURL: BACKEND_ENDPOINTS.login,
 			payload: credentials,
 		});
-		return response;
+
+		// Normalizar la respuesta para asegurar que tenga la estructura correcta
+		const token = response.token || response.access_token || response.access;
+		
+		if (!token) {
+			throw new Error('Token no encontrado en la respuesta');
+		}
+		
+		// El backend devuelve directamente el objeto usuario
+		const userData = response.user || response;
+		
+		if (!userData || !userData.id) {
+			throw new Error('Datos de usuario no encontrados en la respuesta');
+		}
+		
+		const normalizedResponse: IAuthResponse = {
+			token,
+			refreshToken: response.refreshToken || response.refresh_token || response.refresh,
+			user: {
+				id: userData.id,
+				email: userData.email,
+				first_name: userData.first_name,
+				last_name: userData.last_name,
+				username: userData.username,
+				phone: userData.phone,
+				role_id: userData.role_id,
+				is_active: userData.is_active,
+				created_at: userData.created_at,
+				updated_at: userData.updated_at
+			},
+			expiresIn: response.expiresIn || response.expires_in || response.expires
+		};
+
+		return normalizedResponse;
 	} catch (error) {
-		console.error('Error en login:', error);
+		console.error('❌ Error en login:', error);
 		throw new Error('Credenciales inválidas');
 	}
 };
@@ -27,15 +60,48 @@ export const loginUser = async (credentials: ILoginCredentials): Promise<IAuthRe
 // Función para registrar usuario
 export const registerUser = async (credentials: IRegisterCredentials): Promise<IAuthResponse> => {
 	try {
-		console.log('🔍 Intentando iniciar sesión con:', credentials)
-		const response = await post<IAuthResponse>({
+		const response = await post<IBackendAuthResponse>({
 			url: '',
 			baseURL: BACKEND_ENDPOINTS.register,
 			payload: credentials,
 		});
-		return response;
+		
+		// Normalizar la respuesta para asegurar que tenga la estructura correcta
+		const token = response.token || response.access_token || response.access;
+		
+		if (!token) {
+			throw new Error('Token no encontrado en la respuesta');
+		}
+		
+		// El backend devuelve directamente el objeto usuario
+		const userData = response.user || response;
+		
+		if (!userData || !userData.id) {
+			throw new Error('Datos de usuario no encontrados en la respuesta');
+		}
+		
+		const normalizedResponse: IAuthResponse = {
+			token,
+			refreshToken: response.refreshToken || response.refresh_token || response.refresh,
+			user: {
+				id: userData.id,
+				email: userData.email,
+				first_name: userData.first_name,
+				last_name: userData.last_name,
+				username: userData.username,
+				phone: userData.phone,
+				role_id: userData.role_id,
+				is_active: userData.is_active,
+				created_at: userData.created_at,
+				updated_at: userData.updated_at
+			},
+			expiresIn: response.expiresIn || response.expires_in || response.expires
+		};
+		
+
+		return normalizedResponse;
 	} catch (error) {
-		console.error('Error en registro:', error);
+		console.error('❌ Error en registro:', error);
 		throw new Error('Error al registrar usuario');
 	}
 };

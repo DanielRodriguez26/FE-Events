@@ -1,7 +1,7 @@
 import { get } from '../settings/http.service';
 import { MICROSERVICES } from '../settings/envairoment';
 import type { IPaginatedEventsResponse } from './event.interface';
-import type { IEventDto } from '@domain/home/home.interface';
+import type { IEventDto } from './event.interface';
 
 // Extracción de la URL del microservicio de eventos desde la configuración
 const { event: _event } = MICROSERVICES;

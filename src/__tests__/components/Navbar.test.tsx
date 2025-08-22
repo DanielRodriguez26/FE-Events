@@ -56,7 +56,7 @@ describe('Navbar Component', () => {
       const registerLink = screen.getByText('Registrarse').closest('a');
       
       expect(inicioLink).toHaveAttribute('href', '/');
-      expect(eventosLink).toHaveAttribute('href', '/eventos');
+      expect(eventosLink).toHaveAttribute('href', '/events');
       expect(loginLink).toHaveAttribute('href', '/login');
       expect(registerLink).toHaveAttribute('href', '/register');
     });

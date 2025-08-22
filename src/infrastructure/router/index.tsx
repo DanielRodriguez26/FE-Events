@@ -5,6 +5,7 @@ import Login from '@application/pages/auth/Login';
 import Register from '@application/pages/auth/Register';
 import ProtectedRoute from '@components/common/ProtectedRoute';
 import EventDetail from '@/application/pages/event/EventDetail';
+import RegisterEvent from '@/application/pages/registerEvent/RegisterEvent';
 
 // Configuración del router principal de la aplicación
 // Define todas las rutas disponibles y sus componentes correspondientes
@@ -37,7 +38,7 @@ const index = createBrowserRouter([
 		),
 	},
 	{
-		path: '/eventos',
+		path: '/events',
 		element: (
 			<ProtectedRoute>
 				<Event />
@@ -49,6 +50,14 @@ const index = createBrowserRouter([
 		element: (
 			<ProtectedRoute>
 				<EventDetail />
+			</ProtectedRoute>
+		),
+	},
+	{
+		path: '/events/register/:id',
+		element: (
+			<ProtectedRoute>
+				<RegisterEvent />
 			</ProtectedRoute>
 		),
 	},

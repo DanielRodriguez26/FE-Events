@@ -6,6 +6,9 @@ type IEventDto = {
 	description: string; // Descripción detallada del evento
 	start_date: string; // Fecha del evento (formato string)
 	location: string; // Ubicación donde se realizará el evento
+	organizer: string; // Organizador del evento
+	capacity: number; // Capacidad del evento
+	price: number; // Precio del evento
 };
 
 // Interfaz para la respuesta paginada de eventos
