@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "name": "Conferencia de Tecnología 2024",
+        "description": "Una conferencia sobre las últimas tendencias en tecnología y desarrollo de software",
+        "date": "2024-12-15",
+        "location": "Centro de Convenciones, Ciudad de México"
+    },
+    {
+        "id": 2,
+        "name": "Workshop de React",
+        "description": "Taller práctico para aprender React desde cero hasta nivel avanzado",
+        "date": "2024-12-20",
+        "location": "Campus Tecnológico, Guadalajara"
+    },
+    {
+        "id": 3,
+        "name": "Meetup de Desarrolladores",
+        "description": "Encuentro mensual de desarrolladores para networking y compartir experiencias",
+        "date": "2024-12-25",
+        "location": "Coworking Space, Monterrey"
+    },
+    {
+        "id": 4,
+        "name": "Hackathon 2024",
+        "description": "Competencia de programación de 48 horas para crear soluciones innovadoras",
+        "date": "2024-12-30",
+        "location": "Universidad Tecnológica, Puebla"
+    }
+]

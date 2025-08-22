@@ -1,27 +1,50 @@
 {
-  "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2022",
-    "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+	// Configuración del compilador de TypeScript para la aplicación
+	"compilerOptions": {
+		// Configuración de compilación incremental para mejor rendimiento
+		"incremental": true,
+		// Archivo de información de compilación para builds incrementales
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+		// Versión de JavaScript objetivo (ES2022 para características modernas)
+		"target": "ES2022",
+		// Usar define para campos de clase (compatibilidad con ES2022)
+		"useDefineForClassFields": true,
+		// Librerías disponibles (DOM, ES2022, etc.)
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
+		// Configuración del módulo
+		"module": "ESNext", // Usar módulos ES más recientes
+		"skipLibCheck": true, // Saltar verificación de tipos en archivos .d.ts
 
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-  "include": ["src"]
+		/* Configuración del bundler */
+		"moduleResolution": "bundler", // Resolución de módulos para bundlers modernos
+		"allowImportingTsExtensions": true, // Permitir importar archivos .ts directamente
+		"verbatimModuleSyntax": true, // Sintaxis de módulos literal
+		"moduleDetection": "force", // Forzar detección de módulos
+		"noEmit": true, // No generar archivos de salida (Vite se encarga)
+
+		// Configuración de JSX
+		"jsx": "react-jsx", // Usar la nueva transformación de JSX de React
+
+		/* Configuración de linting */
+		"strict": true, // Habilitar todas las verificaciones estrictas de TypeScript
+		"noUnusedLocals": true, // Error si hay variables locales no utilizadas
+		"noUnusedParameters": true, // Error si hay parámetros no utilizados
+		"noFallthroughCasesInSwitch": true, // Error si hay casos de switch sin break
+		"esModuleInterop": true, // Habilitar interoperabilidad de módulos ES
+
+		/* Configuración de mapeo de rutas */
+		"baseUrl": ".", // URL base para resolución de módulos
+		"paths": {
+			"@/*": ["src/*"], // Alias para la carpeta src
+			"@components/*": ["src/components/*"], // Alias para componentes
+			"@store/*": ["src/store/*"], // Alias para el store
+			"@domain/*": ["src/domain/*"], // Alias para la capa de dominio
+			"@application/*": ["src/application/*"], // Alias para la capa de aplicación
+			"@infrastructure/*": ["src/infrastructure/*"], // Alias para la capa de infraestructura
+			"@assets/*": ["src/assets/*"] // Alias para assets
+		}
+	},
+	// Archivos y carpetas a incluir en la compilación
+	"include": ["src"]
 }
