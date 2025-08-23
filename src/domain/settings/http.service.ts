@@ -1,7 +1,6 @@
 import type { ISettingsService } from './http.interface';
 import { ENDPOINT } from './envairoment';
-import axios from 'axios';
-import useStore from '@store/store';
+import axiosInstance from './axios.config';
 
 // Servicio HTTP centralizado para manejar todas las peticiones a la API
 // Proporciona métodos para GET, POST, PUT y DELETE con manejo de errores
@@ -9,20 +8,12 @@ import useStore from '@store/store';
 // Función para realizar peticiones GET
 // Obtiene datos del servidor sin enviar información en el cuerpo
 const get = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsService): Promise<T> => {
-	// Obtener el token del store
-	const token = useStore.getState().token;
-	
-	// Configurar headers con autorización si hay token
-	const headers = {
-		...options?.headers,
-		...(token && { Authorization: `Bearer ${token}` }),
-	};
-	
-	// Realiza la petición GET usando axios
-	// payload se usa como parámetros de consulta (query parameters)
-	const res = await axios.get(baseURL + url, { 
+	// Realiza la petición GET usando la instancia de axios con interceptores
+	const res = await axiosInstance.get(baseURL + url, {
 		params: payload,
-		headers,
+		headers: {
+			...options?.headers,
+		},
 		...options,
 	});
 	
@@ -37,19 +28,11 @@ const get = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsSe
 // Función para realizar peticiones POST
 // Envía datos al servidor para crear nuevos recursos
 const post = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsService): Promise<T> => {
-	// Obtener el token del store
-	const token = useStore.getState().token;
-	
-	// Configurar headers con autorización si hay token
-	const headers = {
-		...options?.headers,
-		...(token && { Authorization: `Bearer ${token}` }),
-	};
-	
-	// Realiza la petición POST usando axios
-	// payload se envía en el cuerpo de la petición
-	const res = await axios.post(baseURL + url, payload, {
-		headers,
+	// Realiza la petición POST usando la instancia de axios con interceptores
+	const res = await axiosInstance.post(baseURL + url, payload, {
+		headers: {
+			...options?.headers,
+		},
 		...options,
 	});
 	
@@ -64,19 +47,11 @@ const post = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsS
 // Función para realizar peticiones PUT
 // Actualiza recursos existentes en el servidor
 const put = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsService): Promise<T> => {
-	// Obtener el token del store
-	const token = useStore.getState().token;
-	
-	// Configurar headers con autorización si hay token
-	const headers = {
-		...options?.headers,
-		...(token && { Authorization: `Bearer ${token}` }),
-	};
-	
-	// Realiza la petición PUT usando axios
-	// payload contiene los datos a actualizar
-	const res = await axios.put(baseURL + url, payload, {
-		headers,
+	// Realiza la petición PUT usando la instancia de axios con interceptores
+	const res = await axiosInstance.put(baseURL + url, payload, {
+		headers: {
+			...options?.headers,
+		},
 		...options,
 	});
 	
@@ -91,20 +66,12 @@ const put = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsSe
 // Función para realizar peticiones DELETE
 // Elimina recursos del servidor
 const remove = async <T>({ url, payload, baseURL = ENDPOINT, options }: ISettingsService): Promise<T> => {
-	// Obtener el token del store
-	const token = useStore.getState().token;
-	
-	// Configurar headers con autorización si hay token
-	const headers = {
-		...options?.headers,
-		...(token && { Authorization: `Bearer ${token}` }),
-	};
-	
-	// Realiza la petición DELETE usando axios
-	// payload puede contener datos adicionales para la eliminación
-	const res = await axios.delete(baseURL + url, {
+	// Realiza la petición DELETE usando la instancia de axios con interceptores
+	const res = await axiosInstance.delete(baseURL + url, {
 		data: payload,
-		headers,
+		headers: {
+			...options?.headers,
+		},
 		...options,
 	});
 	

@@ -25,6 +25,9 @@ export const BACKEND_ENDPOINTS = {
     // endpoints de registro de eventos
     eventRegistration: `${BACKEND_BASE_URL}/event-registrations/`,
 
+    // endpoints de sesiones
+    sessions: `${BACKEND_BASE_URL}/sessions/`,
+
     // Aquí puedes agregar más endpoints según necesites
 };
 
