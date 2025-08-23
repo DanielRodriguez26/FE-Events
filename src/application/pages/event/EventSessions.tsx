@@ -131,7 +131,7 @@ const EventSessions: React.FC = () => {
     if (error) {
         return (
             <Layout>
-                <ErrorMessage message={error} />
+                <ErrorMessage error={error} />
             </Layout>
         );
     }

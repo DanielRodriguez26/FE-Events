@@ -5,7 +5,7 @@ import Loading from '../ui/Loading';
 import EventEmpty from '../ui/EventEmpty';
 import LoadingError from '../ui/LoadingError';
 import { FaArrowRightToBracket, FaTrash } from 'react-icons/fa6';
-import Filter from '@/components/filter';
+import { Filter } from '@/components/filter';
 
 // Interfaz para las propiedades del componente Table
 // Sigue el principio de Interface Segregation (I de SOLID)
