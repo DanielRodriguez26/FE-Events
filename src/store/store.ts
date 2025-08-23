@@ -3,6 +3,7 @@ import { persist, devtools } from 'zustand/middleware';
 import { createHomeState, type IHomeStore } from '@domain/home/home';
 import { createAuthState, type IAuthStore } from '@domain/auth/auth';
 import { createEventState, type IEventStore } from '@/domain/event/event';
+import { createSpeakerState, type ISpeakerStore } from '@/domain/speaker/speaker';
 
 type TypeGlobalActions = {
 	clearStorage: () => void;
@@ -11,7 +12,8 @@ type TypeGlobalActions = {
 export type MyEvenState = TypeGlobalActions & 
 							IHomeStore & 
 							IAuthStore & 
-							IEventStore;
+							IEventStore &
+							ISpeakerStore;
 
 const useStore = create<MyEvenState>()(
 	devtools(
@@ -20,6 +22,7 @@ const useStore = create<MyEvenState>()(
 				...createHomeState(set),
 				...createAuthState(set),
 				...createEventState(set),
+				...createSpeakerState(set),
 				clearStorage: () => {
 					localStorage.removeItem('my-even-storage');
 				},
@@ -29,6 +32,7 @@ const useStore = create<MyEvenState>()(
 				partialize: (state: MyEvenState) => ({
 					allHomeEvents: state.allHomeEvents,
 					allevents: state.allevents,
+					speaker: state.speaker,
 					user: state.user,
 					token: state.token,
 					refreshToken: state.refreshToken,

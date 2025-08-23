@@ -20,7 +20,7 @@ type IPaginatedEventsResponse = {
 	total_pages: number; // Total de páginas
 };
 
-// Interfaz para el filtro de eventos
+
 type IEventFilter = {
 	title: string;
 	location: string;

@@ -11,7 +11,7 @@ interface LayoutProps {
 // Proporciona una estructura consistente con navbar y contenedor principal
 const Layout = (props: LayoutProps) => {
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen bg-gray-100">
 			{/* Barra de navegación superior */}
 			<Navbar />
 			

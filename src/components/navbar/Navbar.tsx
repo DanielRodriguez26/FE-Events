@@ -40,7 +40,7 @@ const Navbar = () => {
 								)}
 								{user?.role_id === 13 && (
 									<Link
-										to="/create-event"
+										to="/event/create"
 										className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
 									>
 										Crear Evento

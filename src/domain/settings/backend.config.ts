@@ -19,6 +19,9 @@ export const BACKEND_ENDPOINTS = {
     // endpoints de usuarios
     users: `${BACKEND_BASE_URL}/users/`,
 
+    // endpoints de ponentes
+    speakers: `${BACKEND_BASE_URL}/speakers/`,
+
     // Aquí puedes agregar más endpoints según necesites
 };
 

@@ -39,6 +39,11 @@ const createEventState = (set: SetState<MyEvenState>): IEventStore => ({
         const event = await eventServices.getEventSearch(filter, page, size);
         set({ allevents: event, currentFilters: filter });
     },
+
+    setCreateEvent: async (event: IEventDto) => {
+        const newEvent = await eventServices.createEvent(event);
+        set({ createEvent: newEvent });
+    },
 });
 
 // La interfaz debe coincidir con lo que retorna `createHomeState`.
@@ -53,6 +58,8 @@ interface IEventStore {
     setEventById: (id: number) => Promise<void>;
     // Función para obtener evento por ID
     setEventSearch: (filter: IEventFilter, page?: number, size?: number) => Promise<void>;
+    // Función para crear evento
+    setCreateEvent: (event: IEventDto) => Promise<void>;
 }
 
 export { createEventState, createEventInitialState };

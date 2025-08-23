@@ -47,7 +47,7 @@ const Login: React.FC = () => {
 				<form className='mt-8 mb-2 w-80 max-w-screen-lg sm:w-96' onSubmit={handleSubmit}>
 					<div className='mb-1 flex flex-col gap-6'>
 						<InputField id='username' name='username' type='text' placeholder='Nombre de usuario' value={username} onChange={e => setUsername(e.target.value)} />
-						<InputField	id='password' name='password' type='password' placeholder='Contraseña' value={password} onChange={e => setPassword(e.target.value)}/>
+						<InputField	id='password' name='password' type='password' placeholder='Contraseña' value={password}onChange={e => setPassword(e.target.value)}/>
 					</div>
 
 					{error && (

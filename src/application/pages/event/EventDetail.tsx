@@ -133,7 +133,11 @@ const EventDetail: React.FC = () => {
                             <button onClick={() => navigate(`/events/register/${eventById.id}`)} className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                                 Inscribirse al Evento
                             </button>
+                            <button onClick={() => navigate(`/events/session/${eventById.id}`)} className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                                Ver Sesiones
+                            </button>
                         </div>
+                        
                     </div>
                 </div>
             </div>
