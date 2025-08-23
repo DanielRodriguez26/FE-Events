@@ -22,6 +22,9 @@ export const BACKEND_ENDPOINTS = {
     // endpoints de ponentes
     speakers: `${BACKEND_BASE_URL}/speakers/`,
 
+    // endpoints de registro de eventos
+    eventRegistration: `${BACKEND_BASE_URL}/event-registrations/`,
+
     // Aquí puedes agregar más endpoints según necesites
 };
 

@@ -11,22 +11,5 @@ type IEventDto = {
 	price: number; // Precio del evento
 };
 
-// Interfaz para la respuesta paginada de eventos
-type IPaginatedEventsResponse = {
-	items: IEventDto[]; // Array de eventos
-	page: number; // Página actual
-	size: number; // Tamaño de la página
-	total_items: number; // Total de elementos
-	total_pages: number; // Total de páginas
-};
 
-
-type IEventFilter = {
-	title: string;
-	location: string;
-	is_active: boolean;
-	date_from: string;
-	date_to: string;
-};
-
-export type { IEventDto, IPaginatedEventsResponse, IEventFilter };
+export type { IEventDto };

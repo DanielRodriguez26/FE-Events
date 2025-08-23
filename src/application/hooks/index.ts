@@ -3,4 +3,3 @@ export { useAuth } from './useAuth';
 export { useRegisterForm } from './useRegisterForm';
 export { useFilter } from './useFilter';
 export { useEventFilters } from './useEventFilters';
-export { useMyRegistrations } from './useMyRegistrations';

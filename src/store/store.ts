@@ -4,6 +4,7 @@ import { createHomeState, type IHomeStore } from '@domain/home/home';
 import { createAuthState, type IAuthStore } from '@domain/auth/auth';
 import { createEventState, type IEventStore } from '@/domain/event/event';
 import { createSpeakerState, type ISpeakerStore } from '@/domain/speaker/speaker';
+import { createEventRegistration, type IEventRegistrationStore } from '@/domain/event-registration/event-registration';
 
 type TypeGlobalActions = {
 	clearStorage: () => void;
@@ -13,7 +14,8 @@ export type MyEvenState = TypeGlobalActions &
 							IHomeStore & 
 							IAuthStore & 
 							IEventStore &
-							ISpeakerStore;
+							ISpeakerStore &
+							IEventRegistrationStore;
 
 const useStore = create<MyEvenState>()(
 	devtools(
@@ -23,6 +25,7 @@ const useStore = create<MyEvenState>()(
 				...createAuthState(set),
 				...createEventState(set),
 				...createSpeakerState(set),
+				...createEventRegistration(set),
 				clearStorage: () => {
 					localStorage.removeItem('my-even-storage');
 				},
@@ -37,6 +40,7 @@ const useStore = create<MyEvenState>()(
 					token: state.token,
 					refreshToken: state.refreshToken,
 					isAuthenticated: state.isAuthenticated,
+					myregistrations: state.myregistrations,
 				}),
 			}
 		)

@@ -19,16 +19,20 @@ const Profile: React.FC = () => {
     const [userEvents, setUserEvents] = useState<UserEvent[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { myregistrations, setMyRegistrations } = useStore();
+
+    console.log("myregistrations", myregistrations);
 
     useEffect(() => {
         if (!isAuthenticated || !token) {
             navigate('/login');
             return;
         }
+        setMyRegistrations();
 
         // Simular carga de eventos del usuario
         loadUserEvents();
-    }, [isAuthenticated, token, navigate]);
+    }, [isAuthenticated, token, navigate, setMyRegistrations]);
 
     const loadUserEvents = async () => {
         setLoading(true);
@@ -114,7 +118,7 @@ const Profile: React.FC = () => {
     if (error) {
         return (
             <Layout>
-                <ErrorMessage message={error} />
+                <ErrorMessage error={error} />
             </Layout>
         );
     }
@@ -132,7 +136,7 @@ const Profile: React.FC = () => {
                                 </svg>
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold">{user?.name || 'Usuario'}</h1>
+                                <h1 className="text-2xl font-bold">{user?.first_name || 'Usuario'}</h1>
                                 <p className="text-purple-100">{user?.email || 'usuario@ejemplo.com'}</p>
                             </div>
                         </div>
@@ -166,7 +170,7 @@ const Profile: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Nombre</label>
-                            <p className="mt-1 text-sm text-gray-900">{user?.name || 'No especificado'}</p>
+                            <p className="mt-1 text-sm text-gray-900">{user?.first_name || 'No especificado'}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Email</label>
