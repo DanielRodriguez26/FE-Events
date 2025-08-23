@@ -27,18 +27,6 @@ export const useRegisterForm = () => {
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
     // Cargar información del evento y verificar registro
-    useEffect(() => {
-        if (id) {
-            const eventId = parseInt(id);
-            setEventById(eventId);
-            checkRegistration(eventId);
-        }
-
-        // Limpiar estado al desmontar
-        return () => {
-            clearRegistrationState();
-        };
-    }, [id, setEventById, checkRegistration, clearRegistrationState]);
 
     // Validar formulario
     const validateForm = (): boolean => {

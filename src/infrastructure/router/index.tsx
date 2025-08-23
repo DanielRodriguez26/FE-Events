@@ -6,7 +6,7 @@ import Register from '@application/pages/auth/Register';
 import ProtectedRoute from '@components/common/ProtectedRoute';
 import EventDetail from '@/application/pages/event/EventDetail';
 import RegisterEvent from '@/application/pages/registerEvent/RegisterEvent';
-import EventCreate from '@/application/pages/event/EventCreate';
+import EventForm from '@/application/pages/event/EventCreate';
 import Profile from '@/application/pages/profile';
 import EventSessions from '@/application/pages/event/EventSessions';
 
@@ -60,7 +60,15 @@ const index = createBrowserRouter([
 		path: '/event/create',
 		element: (
 			<ProtectedRoute>
-				<EventCreate />
+				<EventForm />
+			</ProtectedRoute>
+		),
+	},
+	{
+		path: '/event/edit/:id',
+		element: (
+			<ProtectedRoute>
+				<EventForm />
 			</ProtectedRoute>
 		),
 	},

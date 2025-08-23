@@ -5,6 +5,7 @@ import Loading from '../ui/Loading';
 import EventEmpty from '../ui/EventEmpty';
 import LoadingError from '../ui/LoadingError';
 import { FaArrowRightToBracket, FaTrash } from 'react-icons/fa6';
+import { FaEdit } from 'react-icons/fa';
 //import { Filter } from '@/components/filter';	
 
 // Interfaz para las propiedades del componente Table
@@ -13,6 +14,7 @@ interface TableProps {
 	events: IEventDto[] | null;
 	onEventClick?: (event: IEventDto) => void;
 	onDeleteClick?: (event: IEventDto) => void;
+	onEditClick?: (event: IEventDto) => void;
 	isLoading?: boolean;
 	error?: string | null;
 	pagination?: {
@@ -30,6 +32,7 @@ const Table: React.FC<TableProps> = ({
 	events,
 	onEventClick,
 	onDeleteClick,
+	onEditClick,
 	isLoading = false,
 	error = null,
 	pagination = null,
@@ -82,12 +85,16 @@ const Table: React.FC<TableProps> = ({
 									className='rounded-md cursor-pointer bg-slate-800 py-1 px-2 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none'
 									onClick={() => onEventClick?.(event)}>
 									<FaArrowRightToBracket />
-								
+								</button>
+								<button
+									className='rounded-md cursor-pointer bg-blue-600 py-1 px-2 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-none active:bg-blue-700 hover:bg-blue-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2'
+									onClick={() => onEditClick?.(event)}>
+									<FaEdit />
 								</button>
 								<button
 									className='rounded-md cursor-pointer bg-red-600 py-1 px-2 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-red-700 focus:shadow-none active:bg-red-700 hover:bg-red-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2'
 									onClick={() => onDeleteClick?.(event)}>
-										<FaTrash />
+									<FaTrash />
 								</button>
 							</td>
 						</tr>

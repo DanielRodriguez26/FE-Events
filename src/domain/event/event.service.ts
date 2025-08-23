@@ -1,4 +1,4 @@
-import { get, post } from '../settings/http.service';
+import { get, post, remove, put } from '../settings/http.service';
 import { MICROSERVICES } from '../settings/envairoment';
 import type { IEventDto, IPaginatedEventsResponse, IEventFilter } from './event.interface';
 
@@ -88,6 +88,38 @@ const createEvent = async (eventData: IEventDto): Promise<IEventDto> => {
 	}
 };
 
+const deleteEvent = async (id: number): Promise<IEventDto> => {
+	try {
+		const res = remove<IEventDto>({
+			url: `${id}`,
+			baseURL: event,
+		});
+		const json = await res;
+		console.log('✅ Evento eliminado exitosamente:', json);
+		return json;
+	} catch (error) {
+		console.error('❌ Error al eliminar evento:', error);
+		throw error;
+	}
+};
+
+const updateEvent = async (id: number, eventData: IEventDto): Promise<IEventDto> => {
+	try {
+		const res = put<IEventDto>({
+			url: `${id}`,
+			payload: eventData,
+			baseURL: event,
+		});
+
+		const json = await res;
+		console.log('✅ Evento actualizado exitosamente:', json);
+		return json;
+	} catch (error) {
+		console.error('❌ Error al actualizar evento:', error);
+		throw error;
+	}
+};
+
 // Objeto que exporta todos los servicios del módulo home
 // Centraliza todas las funciones de comunicación con la API
 const eventServices = {
@@ -95,6 +127,8 @@ const eventServices = {
 	getEventById, // Función para obtener evento por ID
 	getEventSearch, // Función para obtener evento por busqueda
 	createEvent, // Función para crear evento
+	deleteEvent, // Función para eliminar evento
+	updateEvent, // Función para actualizar evento
 };
 
 export { eventServices };

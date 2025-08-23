@@ -13,6 +13,7 @@ const Event = () => {
         handleEventClick, 
         handlePageChange, 
         handleDeleteClick,
+        handleEditClick,
         handleFilterChange,
         handleClearFilters
     } = useEvents(10);
@@ -38,6 +39,7 @@ const Event = () => {
                     isLoading={loading}
                     error={error}
                     onEventClick={handleEventClick}
+                    onEditClick={handleEditClick}
                     onDeleteClick={handleDeleteClick}
                     pagination={pagination}
                     onPageChange={handlePageChange}

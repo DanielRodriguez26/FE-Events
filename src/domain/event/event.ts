@@ -20,6 +20,7 @@ const createEventState = (set: SetState<MyEvenState>): IEventStore => ({
     allevents: null,
     eventById: null,
     currentFilters: null,
+    deleteEvent: null,
 
     // Acciones para modificar el estado
     setAllevents: async (page: number = 1, size: number = 6) => {
@@ -45,6 +46,16 @@ const createEventState = (set: SetState<MyEvenState>): IEventStore => ({
         const newEvent = await eventServices.createEvent(event);
         set({ createEvent: newEvent });
     },
+
+    setDeleteEvent: async (id: number) => {
+        const deletedEvent = await eventServices.deleteEvent(id);
+        set({ deleteEvent: deletedEvent });
+    },
+
+    setUpdateEvent: async (id: number, event: IEventDto) => {
+        const updatedEvent = await eventServices.updateEvent(id, event);
+        set({ eventById: updatedEvent });
+    }
 });
 
 // La interfaz debe coincidir con lo que retorna `createHomeState`.
@@ -52,6 +63,7 @@ interface IEventStore {
     createEvent: object;
     allevents: IPaginatedEventsResponse | null;
     eventById: IEventDto | null;
+    deleteEvent: IEventDto | null;
     currentFilters: IEventFilter | null;
     // Función para cargar eventos con parámetros de paginación
     setAllevents: (page?: number, size?: number) => Promise<void>;
@@ -61,6 +73,10 @@ interface IEventStore {
     setEventSearch: (filter: IEventFilter, page?: number, size?: number) => Promise<void>;
     // Función para crear evento
     setCreateEvent: (event: IEventDto) => Promise<void>;
+    // Función para eliminar evento
+    setDeleteEvent: (id: number) => Promise<void>;
+    // Función para actualizar evento
+    setUpdateEvent: (id: number, event: IEventDto) => Promise<void>;
 }
 
 export { createEventState, createEventInitialState };
