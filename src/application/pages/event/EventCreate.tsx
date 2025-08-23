@@ -31,6 +31,7 @@ const EventCreate = () => {
 			title: formData.title,
 			description: formData.description,
 			start_date: formData.start_date,
+			end_date: formData.end_date,
 			location: formData.location,
 			organizer: 'Current User',
 			capacity: parseInt(formData.capacity),

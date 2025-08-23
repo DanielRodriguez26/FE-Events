@@ -12,7 +12,6 @@ const getAllSpeakers = async (): Promise<ISpeakerDto[]> => {
 
 		// Espera la respuesta
 		const json = await res;
-		console.log('✅ Ponentes cargados exitosamente:', json);
 		return json;
 	} catch (error) {
 		console.error('❌ Error al cargar ponentes:', error);

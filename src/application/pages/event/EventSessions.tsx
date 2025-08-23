@@ -89,10 +89,9 @@ const EventSessions: React.FC = () => {
             ];
             
             setSessions(mockSessions);
-        } catch (err) {
-            setError('Error al cargar las sesiones del evento');
-            console.error('Error loading sessions:', err);
-        } finally {
+        		} catch {
+			setError('Error al cargar las sesiones del evento');
+		} finally {
             setLoading(false);
         }
     };
@@ -101,10 +100,9 @@ const EventSessions: React.FC = () => {
         navigate(`/events/session/${id}/detail/${session.id}`);
     };
 
-    const handleRegisterSession = (session: Session) => {
-        // Implementar registro a sesión
-        console.log('Registrando a sesión:', session);
-    };
+    	const handleRegisterSession = (_session: Session) => {
+		// Implementar registro a sesión
+	};
 
     const getAvailabilityColor = (registered: number, capacity: number) => {
         const percentage = (registered / capacity) * 100;

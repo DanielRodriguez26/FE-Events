@@ -21,10 +21,9 @@ export const useEvents = (initialPageSize: number = 20) => {
             await setAllevents(page, size);
             setCurrentPage(page);
             setPageSize(size);
-        } catch (err) {
-            setError('Error al cargar los eventos');
-            console.log('Error loading events:', err);
-        } finally {
+        		} catch (err) {
+			setError('Error al cargar los eventos');
+		} finally {
             setLoading(false);
         }
     };
@@ -36,10 +35,9 @@ export const useEvents = (initialPageSize: number = 20) => {
             setError(null);
             await setEventSearch(filters, page, size);
             setCurrentPage(page);
-        } catch (err) {
-            setError('Error al cargar los eventos filtrados');
-            console.log('Error loading filtered events:', err);
-        } finally {
+        		} catch (err) {
+			setError('Error al cargar los eventos filtrados');
+		} finally {
             setLoading(false);
         }
     };
@@ -62,12 +60,10 @@ export const useEvents = (initialPageSize: number = 20) => {
         navigate(`/event/${event.id}`);
     };
 
-    // Función para manejar el clic en favoritos
-    const handleDeleteClick = (event: IEventDto) => {
-        console.log('Agregar a favoritos:', event);
-
-        // Aquí se puede implementar la lógica de favoritos
-    };
+    	// Función para manejar el clic en favoritos
+	const handleDeleteClick = (event: IEventDto) => {
+		// Aquí se puede implementar la lógica de favoritos
+	};
 
     // Cargar eventos al montar el componente
     useEffect(() => {
@@ -87,16 +83,7 @@ export const useEvents = (initialPageSize: number = 20) => {
         total_pages: allevents.total_pages
     } : null;
 
-    // Debug: Log del estado de los datos
-    console.log('Hook useEvents - Estado de datos:', {
-        allevents,
-        events,
-        eventsLength: events?.length,
-        hasValidEvents,
-        pagination,
-        loading,
-        error
-    });
+    	// Debug: Estado de los datos disponible
 
     return {
         events,

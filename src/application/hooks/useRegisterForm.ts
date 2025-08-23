@@ -1,79 +1,159 @@
 // src/features/auth/hooks/useRegisterForm.ts
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@application/hooks';
-
-// Define el tipo para los datos del formulario para mayor seguridad
-type FormData = {
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
-    phone: string;
-    password: string;
-    confirmPassword: string;
-};
-
-const initialFormData: FormData = {
-    first_name: '',
-    last_name: '',
-    username: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-};
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import useStore from '@store/store';
+import type { IRegisterEventPayload } from '@domain/event-registration/event-registration.interface';
 
 export const useRegisterForm = () => {
-    const [formData, setFormData] = useState<FormData>(initialFormData);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const { register, error, clearError } = useAuth();
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { 
+        eventById, 
+        setEventById,
+        registerToEvent,
+        checkRegistration,
+        isRegistered,
+        currentRegistration,
+        isLoading,
+        error,
+        clearError,
+        clearRegistrationState
+    } = useStore();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const [formData, setFormData] = useState({
+        number_of_participants: 1
+    });
+
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+    // Cargar información del evento y verificar registro
+    useEffect(() => {
+        if (id) {
+            const eventId = parseInt(id);
+            setEventById(eventId);
+            checkRegistration(eventId);
+        }
+
+        // Limpiar estado al desmontar
+        return () => {
+            clearRegistrationState();
+        };
+    }, [id, setEventById, checkRegistration, clearRegistrationState]);
+
+    // Validar formulario
+    const validateForm = (): boolean => {
+        const errors: Record<string, string> = {};
+
+        if (!formData.number_of_participants || formData.number_of_participants < 1) {
+            errors.number_of_participants = 'Debe registrar al menos 1 participante';
+        }
+
+        if (eventById && formData.number_of_participants > eventById.capacity) {
+            errors.number_of_participants = `La capacidad máxima del evento es ${eventById.capacity} participantes`;
+        }
+
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
     };
 
-    const passwordsMatch = formData.password === formData.confirmPassword;
+    // Manejar cambios en el formulario
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const numValue = parseInt(value) || 0;
+        
+        setFormData(prev => ({
+            ...prev,
+            [name]: numValue
+        }));
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!passwordsMatch) return;
-
-        setIsSubmitting(true);
-        clearError();
-
-        try {
-            const success = await register({
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                username: formData.username,
-                email: formData.email,
-                phone: formData.phone,
-                password: formData.password,
-                confirm_password: formData.confirmPassword,
-                is_active: true,
-                role_id: 13,
-            });
-
-            if (success) {
-                navigate('/', { replace: true });
-            }
-        } catch (err) {
-            console.error('Error en registro:', err);
-        } finally {
-            setIsSubmitting(false);
+        // Limpiar error de validación si existe
+        if (validationErrors[name]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
         }
     };
 
+    // Manejar envío del formulario
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!validateForm() || !id) {
+            return;
+        }
+
+        const payload: IRegisterEventPayload = {
+            event_id: parseInt(id),
+            number_of_participants: formData.number_of_participants
+        };
+
+        const success = await registerToEvent(payload);
+        
+        if (success) {
+            // Redirigir al detalle del evento o mostrar mensaje de éxito
+            navigate(`/event/${id}`, { 
+                state: { 
+                    message: '¡Te has registrado exitosamente al evento!' 
+                } 
+            });
+        }
+    };
+
+    // Cancelar registro
+    const handleCancelRegistration = async () => {
+        if (currentRegistration?.id) {
+            const success = await useStore.getState().cancelRegistration(currentRegistration.id);
+            if (success) {
+                navigate(`/event/${id}`, { 
+                    state: { 
+                        message: 'Registro cancelado exitosamente' 
+                    } 
+                });
+            }
+        }
+    };
+
+    // Calcular cupos disponibles
+    const getAvailableSpots = () => {
+        if (!eventById) return 0;
+        return Math.max(0, eventById.capacity - (eventById.registered_attendees || 0));
+    };
+
+    // Verificar si el evento está lleno
+    const isEventFull = () => {
+        return getAvailableSpots() === 0;
+    };
+
+    // Verificar si el evento ya pasó
+    const isEventPast = () => {
+        if (!eventById?.start_date) return false;
+        return new Date(eventById.start_date) < new Date();
+    };
+
     return {
-        formData,
-        isSubmitting,
+        // Estado
+        event: eventById,
+        isRegistered,
+        currentRegistration,
+        isLoading,
         error,
-        handleChange,
+        formData,
+        validationErrors,
+        
+        // Acciones
+        handleInputChange,
         handleSubmit,
-        passwordsMatch,
-        navigate, // Lo devolvemos por si el componente de UI lo necesita
+        handleCancelRegistration,
+        clearError,
+        
+        // Utilidades
+        getAvailableSpots,
+        isEventFull,
+        isEventPast,
+        
+        // Validaciones
+        canRegister: !isEventFull() && !isEventPast() && !isRegistered,
+        canCancel: isRegistered && !isEventPast()
     };
 };

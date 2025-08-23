@@ -36,7 +36,6 @@ const Table: React.FC<TableProps> = ({
 	onPageChange,
 }) => {
 	// Estados de carga y error
-	console.log('Eventos cargados:', events);
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -45,22 +44,12 @@ const Table: React.FC<TableProps> = ({
 		return <LoadingError error={error} />;
 	}
 
-	// Debug: Verificar el estado de los eventos
-	console.log('Estado de eventos:', {
-		events,
-		eventsType: typeof events,
-		isArray: Array.isArray(events),
-		length: events?.length,
-		isNull: events === null,
-		isUndefined: events === undefined,
-		isEmpty: events?.length === 0
-	});
+	// Debug: Estado de eventos disponible
 
 	// Estado sin eventos - condición más robusta
 	const hasNoEvents = !events || events.length === 0 || (Array.isArray(events) && events.length === 0);
 	
 	if (hasNoEvents) {
-		console.log('No hay eventos, mostrando EventEmpty');
 		return (
 			<>
 				<Filter />

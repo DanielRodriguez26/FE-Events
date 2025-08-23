@@ -16,15 +16,13 @@ const Event = () => {
         handleDeleteClick
     } = useEvents(10);
 
-    const handleFilterChange = (newFilters: IEventFilter) => {
-        // TODO: Implementar filtros en el hook useEvents
-        console.log('Filtros aplicados:', newFilters);
-    };
+    	const handleFilterChange = (newFilters: IEventFilter) => {
+		// TODO: Implementar filtros en el hook useEvents
+	};
 
-    const handleClearFilters = () => {
-        // TODO: Implementar limpieza de filtros en el hook useEvents
-        console.log('Filtros limpiados');
-    };
+	const handleClearFilters = () => {
+		// TODO: Implementar limpieza de filtros en el hook useEvents
+	};
 
     return (
         <Layout>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/application/layout/Layout';
 import useStore from '@store/store';
@@ -19,22 +19,16 @@ const Profile: React.FC = () => {
     const [userEvents, setUserEvents] = useState<UserEvent[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { myregistrations, setMyRegistrations } = useStore();
+    const { setMyRegistrations } = useStore();
+    
+    // Ref para evitar cargas múltiples
+    const hasLoaded = useRef(false);
+    const isInitialized = useRef(false);
 
-    console.log("myregistrations", myregistrations);
-
-    useEffect(() => {
-        if (!isAuthenticated || !token) {
-            navigate('/login');
-            return;
-        }
-        setMyRegistrations();
-
-        // Simular carga de eventos del usuario
-        loadUserEvents();
-    }, [isAuthenticated, token, navigate, setMyRegistrations]);
-
-    const loadUserEvents = async () => {
+    // Memoizar la función loadUserEvents para evitar recreaciones
+    const loadUserEvents = useCallback(async () => {
+        if (hasLoaded.current) return; // Evitar cargas múltiples
+        
         setLoading(true);
         setError(null);
         
@@ -68,13 +62,50 @@ const Profile: React.FC = () => {
             ];
             
             setUserEvents(mockUserEvents);
+            hasLoaded.current = true;
         } catch (err) {
             setError('Error al cargar los eventos del usuario');
             console.error('Error loading user events:', err);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    // Memoizar la función de carga de registros
+    const loadRegistrations = useCallback(async () => {
+        try {
+            await setMyRegistrations();
+        } catch (err) {
+            console.error('Error loading registrations:', err);
+        }
+    }, [setMyRegistrations]);
+
+    // useEffect único sin dependencias problemáticas
+    useEffect(() => {
+        // Solo ejecutar una vez al montar el componente
+        if (isInitialized.current) return;
+        isInitialized.current = true;
+
+        // Verificar autenticación
+        if (!isAuthenticated || !token) {
+            navigate('/login');
+            return;
+        }
+
+        // Cargar datos
+        const loadData = async () => {
+            try {
+                await Promise.all([
+                    loadRegistrations(),
+                    loadUserEvents()
+                ]);
+            } catch (err) {
+                console.error('Error loading profile data:', err);
+            }
+        };
+
+        loadData();
+    }, []); // Sin dependencias para evitar re-ejecuciones
 
     const handleLogout = () => {
         // Implementar logout
@@ -107,7 +138,8 @@ const Profile: React.FC = () => {
         }
     };
 
-    if (loading) {
+    // Mostrar loading solo si está cargando y no hay datos
+    if (loading && userEvents.length === 0) {
         return (
             <Layout>
                 <Loading />
