@@ -138,54 +138,6 @@ const AdvancedFilter: React.FC<AdvancedFilterProps> = ({
                             />
                         </div>
                     </div>
-
-                    {/* Filtros adicionales */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Rango de precio
-                            </label>
-                            <div className="flex space-x-2">
-                                <input
-                                    type="number"
-                                    placeholder="Min"
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    disabled={isLoading}
-                                />
-                                <span className="self-center text-gray-500">-</span>
-                                <input
-                                    type="number"
-                                    placeholder="Max"
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    disabled={isLoading}
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Capacidad mínima
-                            </label>
-                            <input
-                                type="number"
-                                placeholder="Ej: 50"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                disabled={isLoading}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Organizador
-                            </label>
-                            <input
-                                type="text"
-                                placeholder="Nombre del organizador"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                disabled={isLoading}
-                            />
-                        </div>
-                    </div>
                 </div>
             )}
 

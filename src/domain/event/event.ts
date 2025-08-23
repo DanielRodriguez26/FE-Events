@@ -37,6 +37,7 @@ const createEventState = (set: SetState<MyEvenState>): IEventStore => ({
     // Acción para obtener evento por ID
     setEventSearch: async(filter: IEventFilter, page: number = 1, size: number = 10) => {
         const event = await eventServices.getEventSearch(filter, page, size);
+        console.log('✅ Eventos cargados exitosamente: search', event);
         set({ allevents: event, currentFilters: filter });
     },
 

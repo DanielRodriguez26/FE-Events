@@ -2,7 +2,6 @@ import { useEvents } from "@/application/hooks";
 import Layout from "@/application/layout/Layout";
 import Table from "@/components/table";
 import { AdvancedFilter } from "@/components/filter";
-import type { IEventFilter } from "@/domain/event/event.interface";
 
 const Event = () => {
     // Uso del hook personalizado para manejar la lógica de eventos
@@ -13,16 +12,10 @@ const Event = () => {
         error, 
         handleEventClick, 
         handlePageChange, 
-        handleDeleteClick
+        handleDeleteClick,
+        handleFilterChange,
+        handleClearFilters
     } = useEvents(10);
-
-    	const handleFilterChange = (newFilters: IEventFilter) => {
-		// TODO: Implementar filtros en el hook useEvents
-	};
-
-	const handleClearFilters = () => {
-		// TODO: Implementar limpieza de filtros en el hook useEvents
-	};
 
     return (
         <Layout>

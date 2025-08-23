@@ -6,12 +6,13 @@ import type { IEventDto, IEventFilter } from '@domain/event/event.interface';
 // Hook personalizado para manejar la lógica de eventos
 // Sigue el principio de Single Responsibility (S de SOLID)
 export const useEvents = (initialPageSize: number = 20) => {
-    const { allevents, setAllevents, setEventSearch, eventById, setEventById, currentFilters } = useStore();
+    const { allevents, setAllevents, setEventSearch, eventById, setEventById } = useStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(initialPageSize);
+    const [activeFilters, setActiveFilters] = useState<IEventFilter | null>(null);
 
     // Función para cargar eventos normales
     const loadEvents = async (page: number = 1, size: number = pageSize) => {
@@ -21,7 +22,7 @@ export const useEvents = (initialPageSize: number = 20) => {
             await setAllevents(page, size);
             setCurrentPage(page);
             setPageSize(size);
-        		} catch (err) {
+        		} catch {
 			setError('Error al cargar los eventos');
 		} finally {
             setLoading(false);
@@ -35,18 +36,51 @@ export const useEvents = (initialPageSize: number = 20) => {
             setError(null);
             await setEventSearch(filters, page, size);
             setCurrentPage(page);
-        		} catch (err) {
+        		} catch {
 			setError('Error al cargar los eventos filtrados');
 		} finally {
             setLoading(false);
         }
     };
 
+    // Función para manejar el cambio de filtros
+    const handleFilterChange = async (newFilters: IEventFilter) => {
+        // Filtrar campos vacíos o nulos
+        const cleanFilters: IEventFilter = {
+            title: newFilters.title?.trim() || '',
+            location: newFilters.location?.trim() || '',
+            is_active: newFilters.is_active,
+            date_from: newFilters.date_from || '',
+            date_to: newFilters.date_to || ''
+        };
+
+        // Verificar si hay filtros activos
+        const hasActiveFilters = cleanFilters.title || 
+                               cleanFilters.location || 
+                               cleanFilters.date_from || 
+                               cleanFilters.date_to;
+
+        if (hasActiveFilters) {
+            setActiveFilters(cleanFilters);
+            await loadFilteredEvents(cleanFilters, 1, pageSize);
+        } else {
+            // Si no hay filtros, cargar eventos normales
+            setActiveFilters(null);
+            await loadEvents(1, pageSize);
+        }
+    };
+
+    // Función para limpiar filtros
+    const handleClearFilters = async () => {
+        setActiveFilters(null);
+        await loadEvents(1, pageSize);
+    };
+
     // Función para manejar el cambio de página
     const handlePageChange = async (page: number) => {
         // Si hay resultados filtrados, usar la paginación de filtros
-        if (allevents && currentFilters) {
-            await loadFilteredEvents(currentFilters, page, pageSize);
+        if (activeFilters) {
+            await loadFilteredEvents(activeFilters, page, pageSize);
         } else {
             // Si no hay filtros, usar la paginación normal
             await loadEvents(page, pageSize);
@@ -61,7 +95,7 @@ export const useEvents = (initialPageSize: number = 20) => {
     };
 
     	// Función para manejar el clic en favoritos
-	const handleDeleteClick = (event: IEventDto) => {
+	const handleDeleteClick = (_event: IEventDto) => {
 		// Aquí se puede implementar la lógica de favoritos
 	};
 
@@ -73,8 +107,8 @@ export const useEvents = (initialPageSize: number = 20) => {
     // Extraer los eventos del objeto paginado (priorizar resultados filtrados)
     const events = allevents?.items || null;
     
-    // Verificar si los eventos están realmente vacíos
-    const hasValidEvents = events && Array.isArray(events) && events.length > 0;
+    // Verificar si los eventos están realmente vacíos (comentado por ahora)
+    // const hasValidEvents = events && Array.isArray(events) && events.length > 0;
     const currentEvent = eventById || null; 
     const pagination = allevents ? {
         page: allevents.page,
@@ -93,9 +127,12 @@ export const useEvents = (initialPageSize: number = 20) => {
         currentPage,
         pageSize,
         eventById: currentEvent,
+        activeFilters,
         handleEventClick,
         handleDeleteClick,
         handlePageChange,
+        handleFilterChange,
+        handleClearFilters,
         reloadEvents: () => loadEvents(currentPage, pageSize)
     };
 };

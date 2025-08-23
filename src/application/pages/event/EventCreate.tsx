@@ -1,9 +1,11 @@
 import Layout from '@/application/layout/Layout';
 import useStore from '@/store/store';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EventCreate = () => {
 	const { setCreateEvent  } = useStore();
+	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
 		title: '',
@@ -24,7 +26,7 @@ const EventCreate = () => {
 		}));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const eventData = {
 			id: 0,
@@ -37,7 +39,15 @@ const EventCreate = () => {
 			capacity: parseInt(formData.capacity),
 			price: 0,
 		};
-		setCreateEvent(eventData);
+		
+		try {
+			await setCreateEvent(eventData);
+			// Redirigir a la pantalla de eventos después de crear exitosamente
+			navigate('/events');
+		} catch (error) {
+			console.error('Error al crear el evento:', error);
+			// Aquí podrías mostrar un mensaje de error al usuario
+		}
 	};
 
 	return (

@@ -5,7 +5,7 @@ import Loading from '../ui/Loading';
 import EventEmpty from '../ui/EventEmpty';
 import LoadingError from '../ui/LoadingError';
 import { FaArrowRightToBracket, FaTrash } from 'react-icons/fa6';
-import { Filter } from '@/components/filter';
+//import { Filter } from '@/components/filter';	
 
 // Interfaz para las propiedades del componente Table
 // Sigue el principio de Interface Segregation (I de SOLID)
@@ -52,18 +52,14 @@ const Table: React.FC<TableProps> = ({
 	if (hasNoEvents) {
 		return (
 			<>
-				<Filter />
 				<EventEmpty />
 			</>
 		);
 	}
 
-	
-
 	// Renderizado de la tabla de eventos
 	return (
 		<>
-		<Filter />
 		<div className='relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border'>
 			<table id='productTable' className='w-full text-left table-auto min-w-max'>
 				<thead>
