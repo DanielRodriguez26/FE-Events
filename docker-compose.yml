@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: miseventos-db
+    environment:
+      POSTGRES_DB: miseventos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - miseventos-network
+    restart: unless-stopped
+
+  # Backend API (FastAPI)
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: miseventos-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/miseventos
+      SECRET_KEY: your-secret-key-here
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+    volumes:
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - miseventos-network
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend (React)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: miseventos-frontend
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_APP_NAME=Mis Eventos
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - miseventos-network
+    restart: unless-stopped
+
+  # Redis para caché y sesiones
+  redis:
+    image: redis:7-alpine
+    container_name: miseventos-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - miseventos-network
+    restart: unless-stopped
+
+  # Nginx como proxy reverso
+  nginx:
+    image: nginx:alpine
+    container_name: miseventos-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - miseventos-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  miseventos-network:
+    driver: bridge

@@ -1,236 +1,257 @@
-# FE-Events - Aplicación de Gestión de Eventos
+# Mis Eventos - Frontend
 
-## 📋 Descripción
+Una aplicación web moderna para la gestión de eventos desarrollada con React, TypeScript y Tailwind CSS.
 
-Aplicación frontend para la gestión de eventos desarrollada con React, TypeScript y Zustand. La aplicación utiliza una arquitectura limpia con separación de responsabilidades y gestión de estado moderna.
+## 🚀 Características
 
-## 🚀 Tecnologías Utilizadas
+- **Gestión de Eventos**: Crear, editar, listar y gestionar eventos
+- **Sistema de Autenticación**: Login y registro de usuarios
+- **Perfil de Usuario**: Gestión de información personal y eventos registrados
+- **Sesiones de Eventos**: Visualización y gestión de sesiones dentro de eventos
+- **Interfaz Responsiva**: Diseño adaptativo para dispositivos móviles y desktop
+- **Estado Global**: Gestión de estado con Zustand
+- **Routing**: Navegación con React Router
+- **Componentes Reutilizables**: Arquitectura modular y escalable
 
-- **React 19** - Biblioteca de interfaz de usuario
+## 🛠️ Tecnologías Utilizadas
+
+- **React 18** - Biblioteca de interfaz de usuario
 - **TypeScript** - Tipado estático para JavaScript
-- **Zustand** - Gestión de estado ligera y moderna
-- **Vite** - Bundler y servidor de desarrollo
-- **React Router DOM** - Enrutamiento del lado del cliente
-- **Axios** - Cliente HTTP para peticiones a APIs
-- **Tailwind CSS** - Framework CSS utility-first
+- **Tailwind CSS** - Framework de CSS utilitario
+- **Zustand** - Gestión de estado global
+- **React Router** - Enrutamiento de la aplicación
+- **Vite** - Herramienta de construcción
+- **Jest** - Framework de testing
+- **ESLint** - Linter para JavaScript/TypeScript
 
 ## 📁 Estructura del Proyecto
 
 ```
 src/
-├── application/          # Capa de aplicación
-│   ├── layout/          # Componentes de layout
-│   └── pages/           # Páginas de la aplicación
-├── components/          # Componentes reutilizables
-├── domain/             # Capa de dominio
-│   ├── home/           # Módulo de home
-│   └── settings/       # Configuraciones
-├── infrastructure/     # Capa de infraestructura
-│   └── router/         # Configuración de rutas
-└── store/              # Gestión de estado (Zustand)
+├── application/           # Capa de aplicación
+│   ├── hooks/            # Hooks personalizados
+│   ├── layout/           # Componentes de layout
+│   └── pages/            # Páginas de la aplicación
+│       ├── auth/         # Páginas de autenticación
+│       ├── event/        # Páginas de eventos
+│       ├── home/         # Página principal
+│       ├── profile/      # Página de perfil
+│       └── registerEvent/ # Páginas de registro a eventos
+├── components/           # Componentes reutilizables
+│   ├── cardEvent/        # Componentes de tarjetas de eventos
+│   ├── common/           # Componentes comunes
+│   ├── filter/           # Componentes de filtros
+│   ├── navbar/           # Componente de navegación
+│   ├── paginator/        # Componente de paginación
+│   ├── table/            # Componente de tabla
+│   └── ui/               # Componentes de UI básicos
+├── domain/               # Capa de dominio
+│   ├── auth/             # Lógica de autenticación
+│   ├── event/            # Lógica de eventos
+│   ├── home/             # Lógica de página principal
+│   ├── settings/         # Configuraciones
+│   └── speaker/          # Lógica de speakers
+├── infrastructure/       # Capa de infraestructura
+│   └── router/           # Configuración de rutas
+├── store/                # Estado global (Zustand)
+└── utils/                # Utilidades
 ```
 
-## 🏗️ Arquitectura
-
-### Capas de la Aplicación
-
-1. **Domain** - Lógica de negocio y entidades
-2. **Application** - Casos de uso y páginas
-3. **Infrastructure** - Configuración técnica y servicios externos
-
-### Gestión de Estado
-
-- **Zustand** para gestión de estado global
-- **Persistencia** en localStorage para eventos
-- **DevTools** para debugging
-- **Separación** por módulos (home, etc.)
-
-## 🚀 Instalación y Uso
+## 🚀 Instalación y Configuración
 
 ### Prerrequisitos
 
-- Node.js (versión 18 o superior)
+- Node.js (versión 16 o superior)
 - npm o yarn
 
 ### Instalación
 
+1. **Clonar el repositorio**
+   ```bash
+   git clone <url-del-repositorio>
+   cd FE-Events
+   ```
+
+2. **Instalar dependencias**
+   ```bash
+   npm install
+   ```
+
+3. **Configurar variables de entorno**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Editar el archivo `.env` con las configuraciones necesarias:
+   ```env
+   VITE_API_URL=http://localhost:8000
+   VITE_APP_NAME=Mis Eventos
+   ```
+
+4. **Ejecutar en modo desarrollo**
+   ```bash
+   npm run dev
+   ```
+
+5. **Abrir en el navegador**
+   ```
+   http://localhost:5173
+   ```
+
+## 📋 Scripts Disponibles
+
+- `npm run dev` - Ejecutar en modo desarrollo
+- `npm run build` - Construir para producción
+- `npm run preview` - Vista previa de la construcción
+- `npm run test` - Ejecutar tests
+- `npm run test:coverage` - Ejecutar tests con cobertura
+- `npm run lint` - Ejecutar linter
+- `npm run lint:fix` - Corregir errores de linting automáticamente
+
+## 🧪 Testing
+
+La aplicación incluye tests unitarios y de integración:
+
 ```bash
-# Clonar el repositorio
-git clone <url-del-repositorio>
+# Ejecutar todos los tests
+npm run test
 
-# Navegar al directorio
-cd FE-Events
+# Ejecutar tests en modo watch
+npm run test:watch
 
-# Instalar dependencias
-npm install
+# Generar reporte de cobertura
+npm run test:coverage
 ```
 
-### Desarrollo
+## 🏗️ Arquitectura
+
+### Patrón de Arquitectura
+
+La aplicación sigue una arquitectura hexagonal (Clean Architecture) con las siguientes capas:
+
+1. **Presentation Layer** (`components/`, `application/pages/`)
+   - Componentes de UI
+   - Páginas de la aplicación
+   - Hooks personalizados
+
+2. **Application Layer** (`application/`)
+   - Casos de uso
+   - Lógica de aplicación
+   - Hooks de estado
+
+3. **Domain Layer** (`domain/`)
+   - Entidades de negocio
+   - Interfaces de servicios
+   - Lógica de dominio
+
+4. **Infrastructure Layer** (`infrastructure/`)
+   - Configuración de rutas
+   - Servicios externos
+   - Adaptadores
+
+### Gestión de Estado
+
+Se utiliza Zustand para la gestión del estado global, organizado en slices:
+
+- **Auth Store**: Estado de autenticación
+- **Event Store**: Estado de eventos
+- **Home Store**: Estado de la página principal
+- **Speaker Store**: Estado de speakers
+
+## 🎨 Componentes Principales
+
+### Páginas
+
+- **Home**: Página principal con eventos destacados
+- **Events**: Lista de eventos con filtros y paginación
+- **EventDetail**: Detalle completo de un evento
+- **EventCreate**: Formulario de creación de eventos
+- **EventSessions**: Sesiones de un evento específico
+- **Profile**: Perfil del usuario con eventos registrados
+- **Login/Register**: Páginas de autenticación
+
+### Componentes Reutilizables
+
+- **Table**: Tabla de eventos con paginación
+- **CardEvent**: Tarjeta de evento
+- **Filter**: Filtros de búsqueda
+- **Navbar**: Navegación principal
+- **ProtectedRoute**: Ruta protegida por autenticación
+
+## 🔐 Autenticación
+
+El sistema de autenticación incluye:
+
+- Login con email y contraseña
+- Registro de nuevos usuarios
+- Protección de rutas
+- Gestión de tokens JWT
+- Persistencia de sesión
+
+## 📱 Responsive Design
+
+La aplicación está diseñada para ser completamente responsiva:
+
+- **Mobile First**: Diseño optimizado para móviles
+- **Breakpoints**: Adaptación a tablets y desktop
+- **Componentes Flexibles**: Adaptación automática del contenido
+
+## 🚀 Despliegue
+
+### Construcción para Producción
 
 ```bash
-# Iniciar servidor de desarrollo
-npm run dev
-
-# La aplicación estará disponible en http://localhost:5173
-```
-
-### Construcción
-
-```bash
-# Construir para producción
 npm run build
-
-# Vista previa de la build
-npm run preview
 ```
 
-### Linting
+### Docker
 
 ```bash
-# Ejecutar linter
-npm run lint
+# Construir imagen
+docker build -t mis-eventos-frontend .
+
+# Ejecutar contenedor
+docker run -p 3000:3000 mis-eventos-frontend
 ```
 
-## 📝 Funcionalidades
+## 📊 Métricas y Performance
 
-### Módulo Home
-- ✅ Lista de eventos
-- ✅ Estados de carga y error
-- ✅ Persistencia de datos
-- ✅ Gestión de estado asíncrono
-
-### Sistema de Autenticación
-- ✅ Login y registro de usuarios
-- ✅ Protección de rutas con tokens JWT
-- ✅ Renovación automática de tokens
-- ✅ Persistencia de sesión
-- ✅ Manejo automático de errores 401
-- ✅ Logout automático en tokens expirados
-
-### Características Técnicas
-- ✅ TypeScript estricto
-- ✅ Alias de importación (@components, @store, etc.)
-- ✅ Enrutamiento con React Router
-- ✅ Cliente HTTP centralizado con interceptores
-- ✅ Gestión de errores
-- ✅ Responsive design
-- ✅ Arquitectura limpia con separación de capas
-
-## 🔧 Configuración
-
-### Alias de Importación
-
-El proyecto utiliza alias para facilitar las importaciones:
-
-```typescript
-import Component from '@components/Component';
-import { useStore } from '@store/store';
-import { homeService } from '@domain/home/home.service';
-```
-
-### Variables de Entorno
-
-Configuración en `src/domain/settings/envairoment.ts`:
-
-```typescript
-const ENDPOINT = 'http://127.0.0.1:5173/';
-const MICROSERVICES = {
-  event: 'event.json'
-};
-```
-
-## 📚 Uso del Store
-
-### Acceso al Estado
-
-```typescript
-import useStore from '@store/store';
-
-const MyComponent = () => {
-  const { events, loading, error, fetchEvents } = useStore();
-  
-  // Usar el estado y acciones
-};
-```
-
-### Acciones Disponibles
-
-- `fetchEvents()` - Obtener eventos de la API
-- `setEvents(events)` - Actualizar lista de eventos
-- `setLoading(loading)` - Controlar estado de carga
-- `setError(error)` - Manejar errores
-- `clearEvents()` - Limpiar eventos
-- `clearStorage()` - Limpiar almacenamiento
-
-## 🔐 Sistema de Autenticación
-
-### Uso del Hook de Autenticación
-
-```typescript
-import { useAuth } from '@application/hooks';
-
-const MyComponent = () => {
-  const { 
-    user, 
-    isAuthenticated, 
-    login, 
-    logout, 
-    getAuthHeaders 
-  } = useAuth();
-  
-  // Usar funcionalidades de autenticación
-};
-```
-
-### Protección de Rutas
-
-```typescript
-import ProtectedRoute from '@components/common/ProtectedRoute';
-
-// Ruta protegida
-<ProtectedRoute>
-  <MyProtectedComponent />
-</ProtectedRoute>
-
-// Ruta solo para usuarios no autenticados
-<ProtectedRoute requireAuth={false}>
-  <LoginComponent />
-</ProtectedRoute>
-```
-
-### Documentación Completa
-
-Para más detalles sobre el sistema de autenticación, consulta el archivo [AUTHENTICATION_SETUP.md](./AUTHENTICATION_SETUP.md).
-
-## 🐛 Solución de Problemas
-
-### Error de JSON Parse
-Si encuentras errores de JSON parse, asegúrate de que el `package.json` no contenga comentarios.
-
-### Errores de TypeScript
-Ejecuta `npm run lint` para identificar y corregir errores de tipos.
-
-### Problemas de Importación
-Verifica que los alias estén correctamente configurados en `vite.config.ts` y `tsconfig.app.json`.
+- **Lighthouse Score**: Optimizado para rendimiento
+- **Bundle Size**: Minimizado con Vite
+- **Code Splitting**: Carga lazy de componentes
+- **Caching**: Estrategias de caché implementadas
 
 ## 🤝 Contribución
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+5. Abrir un Pull Request
 
-## 📄 Licencia
+## 📝 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
-## 👥 Autores
+## 📞 Soporte
 
-- Daniel Rodriguez - Desarrollo inicial
+Para soporte técnico o preguntas:
 
-## 🙏 Agradecimientos
+- Email: soporte@miseventos.com
+- Documentación: [docs.miseventos.com](https://docs.miseventos.com)
+- Issues: [GitHub Issues](https://github.com/miseventos/frontend/issues)
 
-- Zustand por la excelente gestión de estado
-- Vite por el bundler rápido
-- React por la biblioteca de UI
+## 🔄 Changelog
+
+### v1.0.0 (2024-03-15)
+- ✅ Sistema de autenticación completo
+- ✅ Gestión de eventos CRUD
+- ✅ Perfil de usuario
+- ✅ Sesiones de eventos
+- ✅ Interfaz responsiva
+- ✅ Tests unitarios
+- ✅ Documentación completa
+
+---
+
+**Desarrollado con ❤️ por el equipo de Mis Eventos**
