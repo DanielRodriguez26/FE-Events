@@ -11,6 +11,8 @@ interface UserEvent {
     start_date: string;
     location: string;
     status: 'registered' | 'attended' | 'cancelled';
+    participants?: number;
+    registration_date?: string;
 }
 
 const Profile: React.FC = () => {
@@ -19,7 +21,6 @@ const Profile: React.FC = () => {
     const [userEvents, setUserEvents] = useState<UserEvent[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { setMyRegistrations } = useStore();
     
     // Ref para evitar cargas múltiples
     const hasLoaded = useRef(false);
@@ -33,35 +34,30 @@ const Profile: React.FC = () => {
         setError(null);
         
         try {
-            // Simular llamada a API
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Llamada real a la API para obtener registros del usuario
+            const { setMyRegistrations } = useStore.getState();
+            await setMyRegistrations();
             
-            // Datos simulados de eventos del usuario
-            const mockUserEvents: UserEvent[] = [
-                {
-                    id: 1,
-                    title: "Conferencia de Tecnología 2024",
-                    start_date: "2024-03-15T10:00:00",
-                    location: "Centro de Convenciones",
-                    status: 'registered'
-                },
-                {
-                    id: 2,
-                    title: "Workshop de React",
-                    start_date: "2024-03-20T14:00:00",
-                    location: "Universidad Nacional",
-                    status: 'attended'
-                },
-                {
-                    id: 3,
-                    title: "Meetup de Desarrollo Web",
-                    start_date: "2024-04-05T18:00:00",
-                    location: "Coworking Space",
-                    status: 'registered'
-                }
-            ];
+            // Obtener los registros del store
+            const { myregistrations } = useStore.getState();
             
-            setUserEvents(mockUserEvents);
+            if (myregistrations && Array.isArray(myregistrations)) {
+                // Convertir registros a formato de eventos del usuario
+                const userEventsFromAPI: UserEvent[] = myregistrations.map((registration: any) => ({
+                    id: registration.event_id,
+                    title: registration.event_title || 'Evento sin título',
+                    start_date: registration.event_date,
+                    location: registration.event_location || 'Ubicación no especificada',
+                    status: 'registered' as const,
+                    participants: registration.number_of_participants,
+                    registration_date: registration.created_at
+                }));
+                
+                setUserEvents(userEventsFromAPI);
+            } else {
+                setUserEvents([]);
+            }
+            
             hasLoaded.current = true;
         } catch (err) {
             setError('Error al cargar los eventos del usuario');
@@ -73,12 +69,8 @@ const Profile: React.FC = () => {
 
     // Memoizar la función de carga de registros
     const loadRegistrations = useCallback(async () => {
-        try {
-            await setMyRegistrations();
-        } catch (err) {
-            console.error('Error loading registrations:', err);
-        }
-    }, [setMyRegistrations]);
+       
+    }, []);
 
     // useEffect único sin dependencias problemáticas
     useEffect(() => {
@@ -275,6 +267,22 @@ const Profile: React.FC = () => {
                                                 </svg>
                                                 {event.location}
                                             </div>
+                                            {event.participants && (
+                                                <div className="mt-1 flex items-center text-sm text-gray-500">
+                                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                    </svg>
+                                                    {event.participants} participante(s)
+                                                </div>
+                                            )}
+                                            {event.registration_date && (
+                                                <div className="mt-1 flex items-center text-sm text-gray-500">
+                                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Registrado el {new Date(event.registration_date).toLocaleDateString()}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="ml-4">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(event.status)}`}>
@@ -289,14 +297,7 @@ const Profile: React.FC = () => {
                                         >
                                             Ver Detalles
                                         </button>
-                                        {event.status === 'registered' && (
-                                            <button 
-                                                onClick={() => navigate(`/events/register/${event.id}`)}
-                                                className="text-green-600 hover:text-green-800 text-sm font-medium"
-                                            >
-                                                Gestionar Inscripción
-                                            </button>
-                                        )}
+                                       
                                     </div>
                                 </div>
                             ))}
