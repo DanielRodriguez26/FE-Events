@@ -20,4 +20,13 @@ type IPaginatedEventsResponse = {
 	total_pages: number; // Total de páginas
 };
 
-export type { IEventDto, IPaginatedEventsResponse };
+// Interfaz para el filtro de eventos
+type IEventFilter = {
+	title: string;
+	location: string;
+	is_active: boolean;
+	date_from: string;
+	date_to: string;
+};
+
+export type { IEventDto, IPaginatedEventsResponse, IEventFilter };

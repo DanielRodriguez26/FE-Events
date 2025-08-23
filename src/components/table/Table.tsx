@@ -1,10 +1,11 @@
 import React from 'react';
-import type { IEventDto } from '@domain/home/home.interface';
+import type { IEventDto } from '@domain/event/event.interface';
 import Paginator from '@/components/paginator';
 import Loading from '../ui/Loading';
 import EventEmpty from '../ui/EventEmpty';
 import LoadingError from '../ui/LoadingError';
 import { FaArrowRightToBracket, FaTrash } from 'react-icons/fa6';
+import Filter from '@/components/filter';
 
 // Interfaz para las propiedades del componente Table
 // Sigue el principio de Interface Segregation (I de SOLID)
@@ -35,6 +36,7 @@ const Table: React.FC<TableProps> = ({
 	onPageChange,
 }) => {
 	// Estados de carga y error
+	console.log('Eventos cargados:', events);
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -43,13 +45,36 @@ const Table: React.FC<TableProps> = ({
 		return <LoadingError error={error} />;
 	}
 
-	// Estado sin eventos
-	if (!events || events.length === 0) {
-		return <EventEmpty />;
+	// Debug: Verificar el estado de los eventos
+	console.log('Estado de eventos:', {
+		events,
+		eventsType: typeof events,
+		isArray: Array.isArray(events),
+		length: events?.length,
+		isNull: events === null,
+		isUndefined: events === undefined,
+		isEmpty: events?.length === 0
+	});
+
+	// Estado sin eventos - condición más robusta
+	const hasNoEvents = !events || events.length === 0 || (Array.isArray(events) && events.length === 0);
+	
+	if (hasNoEvents) {
+		console.log('No hay eventos, mostrando EventEmpty');
+		return (
+			<>
+				<Filter />
+				<EventEmpty />
+			</>
+		);
 	}
+
+	
 
 	// Renderizado de la tabla de eventos
 	return (
+		<>
+		<Filter />
 		<div className='relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border'>
 			<table id='productTable' className='w-full text-left table-auto min-w-max'>
 				<thead>
@@ -86,6 +111,7 @@ const Table: React.FC<TableProps> = ({
 			</table>
 			{pagination && <Paginator pagination={pagination} onPageChange={onPageChange} />}
 		</div>
+		</>
 	);
 };
 

@@ -28,7 +28,7 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 
 			
 			set({
-				user: response.user,
+				user: response.user || null,
 				token: response.token,
 				refreshToken: response.refreshToken || null,
 				isAuthenticated: true,
@@ -69,8 +69,8 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 			console.log('✅ Registro exitoso, actualizando estado:', response);
 			
 			set({
-				user: response.user,
-				token: response.token,
+				user: response.user || null,
+				token: response.token || null,
 				refreshToken: response.refreshToken || null,
 				isAuthenticated: true,
 				isLoading: false,

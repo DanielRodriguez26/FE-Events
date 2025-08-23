@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '@store/store';
-import type { IEventDto } from '@domain/home/home.interface';
+import type { IEventDto, IEventFilter } from '@domain/event/event.interface';
 
 // Hook personalizado para manejar la lógica de eventos
 // Sigue el principio de Single Responsibility (S de SOLID)
 export const useEvents = (initialPageSize: number = 20) => {
-    const { allevents, setAllevents, eventById, setEventById } = useStore();
+    const { allevents, setAllevents, setEventSearch, eventById, setEventById, currentFilters } = useStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(initialPageSize);
 
-    // Función para cargar eventos
+    // Función para cargar eventos normales
     const loadEvents = async (page: number = 1, size: number = pageSize) => {
         try {
             setLoading(true);
@@ -29,9 +29,30 @@ export const useEvents = (initialPageSize: number = 20) => {
         }
     };
 
+    // Función para cargar eventos filtrados
+    const loadFilteredEvents = async (filters: IEventFilter, page: number = 1, size: number = pageSize) => {
+        try {
+            setLoading(true);
+            setError(null);
+            await setEventSearch(filters, page, size);
+            setCurrentPage(page);
+        } catch (err) {
+            setError('Error al cargar los eventos filtrados');
+            console.log('Error loading filtered events:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Función para manejar el cambio de página
     const handlePageChange = async (page: number) => {
-        await loadEvents(page, pageSize);
+        // Si hay resultados filtrados, usar la paginación de filtros
+        if (allevents && currentFilters) {
+            await loadFilteredEvents(currentFilters, page, pageSize);
+        } else {
+            // Si no hay filtros, usar la paginación normal
+            await loadEvents(page, pageSize);
+        }
     };
 
     // Función para manejar el clic en un evento
@@ -53,8 +74,11 @@ export const useEvents = (initialPageSize: number = 20) => {
         loadEvents(currentPage, pageSize);
     }, [pageSize]); 
 
-    // Extraer los eventos del objeto paginado
+    // Extraer los eventos del objeto paginado (priorizar resultados filtrados)
     const events = allevents?.items || null;
+    
+    // Verificar si los eventos están realmente vacíos
+    const hasValidEvents = events && Array.isArray(events) && events.length > 0;
     const currentEvent = eventById || null; 
     const pagination = allevents ? {
         page: allevents.page,
@@ -62,6 +86,17 @@ export const useEvents = (initialPageSize: number = 20) => {
         total_items: allevents.total_items,
         total_pages: allevents.total_pages
     } : null;
+
+    // Debug: Log del estado de los datos
+    console.log('Hook useEvents - Estado de datos:', {
+        allevents,
+        events,
+        eventsLength: events?.length,
+        hasValidEvents,
+        pagination,
+        loading,
+        error
+    });
 
     return {
         events,

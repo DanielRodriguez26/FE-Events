@@ -28,20 +28,32 @@ const Navbar = () => {
 						>
 							Inicio
 						</Link>
-						<Link
-							to="/events"
-							className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-						>
-							Eventos
-						</Link>
 						{isAuthenticated && (
 							<>
-								<Link
-									to="/crear-evento"
-									className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-								>
-									Crear Evento
-								</Link>
+								{user?.role_id === 13 && (
+									<Link
+										to="/events"
+										className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+									>
+										Eventos
+									</Link>
+								)}
+								{user?.role_id === 13 && (
+									<Link
+										to="/create-event"
+										className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+									>
+										Crear Evento
+									</Link>
+								)}
+								{user?.role_id === 13  && (
+									<Link
+										to="/my-evens"
+										className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+									>
+										Mis Eventos
+									</Link>
+								)}
 								<Link
 									to="/perfil"
 									className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -112,15 +124,10 @@ const Navbar = () => {
 							>
 								Inicio
 							</Link>
-							<Link
-								to="/events"
-								className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
-								onClick={() => setIsMenuOpen(false)}
-							>
-								Eventos
-							</Link>
+
 							{isAuthenticated && (
 								<>
+								{user?.role_id === 11 || user?.role_id === 12 && (
 									<Link
 										to="/crear-evento"
 										className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
@@ -128,6 +135,26 @@ const Navbar = () => {
 									>
 										Crear Evento
 									</Link>
+									)}
+
+									{user?.role_id === 11  && (	
+										<Link
+											to="/events"
+											className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+											onClick={() => setIsMenuOpen(false)}
+										>
+											Eventos
+										</Link>
+									)}
+									{user?.role_id === 13 && (
+										<Link
+											to="/my-evens"
+											className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
+											onClick={() => setIsMenuOpen(false)}
+										>
+											Mis Eventos
+										</Link>
+									)}
 									<Link
 										to="/perfil"
 										className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium transition-colors"
@@ -137,7 +164,7 @@ const Navbar = () => {
 									</Link>
 									<div className="border-t border-gray-200 dark:border-gray-700 pt-2">
 										<span className="text-gray-700 dark:text-gray-300 block px-3 py-2 text-sm">
-											Hola, {user?.name || 'Usuario'}
+											Hola, {user?.first_name + ' ' + user?.last_name || 'Usuario'}
 										</span>
 										<button
 											onClick={() => {

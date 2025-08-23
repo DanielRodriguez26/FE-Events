@@ -12,7 +12,10 @@ const EventEmpty = () => {
 				</svg>
 			</div>
 			<h3 className='text-lg font-medium text-gray-900 dark:text-white mb-2'>No hay eventos disponibles</h3>
-			<p className='text-gray-500 dark:text-gray-400'>Por el momento no se encontraron eventos. Vuelve más tarde.</p>
+			<p className='text-gray-500 dark:text-gray-400'>
+				No se encontraron eventos con los criterios especificados. 
+				Intenta ajustar los filtros o vuelve más tarde.
+			</p>
 		</div>
 	);
 };

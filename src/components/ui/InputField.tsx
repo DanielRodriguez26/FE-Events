@@ -21,7 +21,7 @@ const InputField: React.FC<InputFieldProps> = ({ id, name, placeholder, ...props
             <label htmlFor={id} className="sr-only">
                 {placeholder}
             </label>
-            <input id={id} name={name} {...props} className={`${baseClasses} ${props.className || ''}`} />
+            <input id={id} name={name} {...props} placeholder={placeholder} className={`${baseClasses} ${props.className || ''}`} />
         </div>
     );
 };

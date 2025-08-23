@@ -28,6 +28,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 		);
 	}
 
+
 	// Si la ruta requiere autenticación y el usuario no está autenticado
 	if (requireAuth && !isAuthenticated) {
 		// Redirigir al login guardando la ubicación actual para volver después
