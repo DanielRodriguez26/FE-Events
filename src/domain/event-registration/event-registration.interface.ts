@@ -5,14 +5,23 @@ export interface IEventRegistrationDto {
     number_of_participants: number;
     created_at: string;
     updated_at: string | null;
-    event_title: string;
-    event_date: string;
-    event_location: string;
+    title: string;
+    date: string;
+    location: string;
+    status: string;
 }
 
 export interface IRegisterEventPayload {
     event_id: number;
     number_of_participants: number;
+}
+
+export interface IPaginatedEventRegistrationDto {
+    items: IEventRegistrationDto[];
+    page: number;
+    size: number;
+    total_items: number;
+    total_pages: number;
 }
 
 export interface IRegistrationResponse {
@@ -21,7 +30,7 @@ export interface IRegistrationResponse {
     user_id: number;
     number_of_participants: number;
     created_at: string;
-    event_title: string;
-    event_date: string;
-    event_location: string;
+    title: string;
+    date: string;
+    location: string;
 }	

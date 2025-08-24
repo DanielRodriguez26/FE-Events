@@ -1,12 +1,15 @@
 import Layout from "@application/layout/Layout";
-import { useEvents } from "@application/hooks";
+import { useEvents, useError } from "@application/hooks";
 import CardEvent from "@/components/cardEvent";
+import ErrorDisplay from "@components/ui/ErrorDisplay";
 
 // Componente principal de la página Home
 // Muestra la lista de eventos usando el hook personalizado
 const Home = () => {
     // Uso del hook personalizado para manejar la lógica de eventos
-    const { events, pagination, loading, error, handleEventClick, handleFavoriteClick, handlePageChange } = useEvents(6)
+    const { events, pagination, loading, error, handleEventClick, handleFavoriteClick, handlePageChange } = useEvents(6);
+    const { error: globalError, clearError } = useError();
+    
     // Renderizado principal: Lista de eventos
     return (
         <Layout>
@@ -15,6 +18,14 @@ const Home = () => {
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Eventos</h1>
                     <p className="text-gray-600 dark:text-gray-400">Descubre los mejores eventos cerca de ti</p>
                 </div>
+
+                {/* Mostrar errores globales */}
+                <ErrorDisplay 
+                    error={globalError} 
+                    onDismiss={clearError}
+                    onRetry={() => window.location.reload()}
+                    className="mb-6"
+                />
 
                 {/* Componente Table reutilizable */}
                 <CardEvent 

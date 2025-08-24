@@ -1,20 +1,18 @@
 import React from 'react';
-import type { UserEvent } from '@/application/hooks/useProfile'; // Importamos la interfaz del hook
+import type { IUser } from '@/domain/auth/auth.interface';
+import type { IEventRegistrationDto } from '@/domain/event-registration/event-registration.interface';
 
 
 interface ProfileHeaderProps {
-    user: {
-        first_name: string;
-        email: string;
-        phone: string;
-        created_at: string;
-    } | null;
-    events: UserEvent[];
+    user: IUser  | null;
+    events: IEventRegistrationDto[];
 }
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, events }) => {
-    const attendedEvents = events.filter(e => e.status === 'attended').length;
-    const upcomingEvents = events.filter(e => e.status === 'registered').length;
+    const attendedEvents = events.filter((e: IEventRegistrationDto) => e.status === 'attended').length;
+    const upcomingEvents = events.filter((e: IEventRegistrationDto) => e.status === 'registered').length;
+
+    console.log(events);
 
     return (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">

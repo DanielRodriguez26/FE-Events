@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '@store/store';
+import type { IEventRegistrationDto } from '@/domain/event-registration/event-registration.interface';
 
 // Reutilizamos la interfaz que ya tenías definida
 export interface UserEvent {
@@ -21,6 +22,7 @@ export interface IRegistrationDto {
     event_location: string;
     number_of_participants: number;
     created_at: string;
+    status: string;
 }   
 
 export const useProfile = () => {
@@ -45,18 +47,17 @@ export const useProfile = () => {
         try {
             // La acción setMyRegistrations ya debería obtener y actualizar el store
             await setMyRegistrations();
-            console.log(myregistrations);
             
             // Obtenemos los datos actualizados del store directamente después de la llamada
             const updatedRegistrations = useStore.getState().myregistrations;
 
-            if (updatedRegistrations && Array.isArray(updatedRegistrations)) {
-                const mappedEvents: UserEvent[] = updatedRegistrations.map((reg: IRegistrationDto) => ({
+            if (updatedRegistrations && Array.isArray(updatedRegistrations.items)) {
+                const mappedEvents: UserEvent[] = updatedRegistrations.items.map((reg: IEventRegistrationDto) => ({
                     id: reg.event_id,
-                    title: reg.event_title || 'Evento sin título',
-                    start_date: reg.event_date,
-                    location: reg.event_location || 'Ubicación no especificada',
-                    status: 'registered' as const, // Asumimos 'registered' por ahora
+                    title: reg.title || 'Evento sin título',
+                    start_date: reg.date,
+                    location: reg.location || 'Ubicación no especificada',
+                    status: reg.status as 'registered' | 'attended' | 'cancelled', // Asumimos 'registered' por ahora
                     participants: reg.number_of_participants,
                     registration_date: reg.created_at
                 }));
@@ -77,5 +78,5 @@ export const useProfile = () => {
         loadUserEvents();
     },[]); // loadUserEvents está memoizada con useCallback
 
-    return { user, userEvents, loading, error };
+    return { user, userEvents, loading, error, myregistrations};
 };

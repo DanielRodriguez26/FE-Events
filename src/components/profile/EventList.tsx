@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { UserEvent } from '@/application/hooks/useProfile';
+import type { IEventRegistrationDto } from '@/domain/event-registration/event-registration.interface';
 import EventListItem from './EventListItem';
 
 interface EventListProps {
-    events: UserEvent[];
+    events: IEventRegistrationDto[];
 }
 
 const EventList: React.FC<EventListProps> = ({ events }) => {

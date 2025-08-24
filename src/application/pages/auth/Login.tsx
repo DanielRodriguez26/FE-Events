@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@application/hooks';
+import { useAuth, useError } from '@application/hooks';
 import InputField from '@components/ui/InputField';
+import ErrorDisplay from '@components/ui/ErrorDisplay';
 
 // Componente de página de login
 // Permite a los usuarios iniciar sesión en la aplicación
@@ -10,7 +11,8 @@ const Login: React.FC = () => {
 	const [password, setPassword] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const { login, error, clearError } = useAuth();
+	const { login } = useAuth();
+	const { error, clearError, handleError } = useError();
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -30,7 +32,7 @@ const Login: React.FC = () => {
 				navigate(from, { replace: true });
 			}
 		} catch (err) {
-			console.error('Error en login:', err);
+			handleError(err, 'Login');
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -50,11 +52,11 @@ const Login: React.FC = () => {
 						<InputField	id='password' name='password' type='password' placeholder='Contraseña' value={password}onChange={e => setPassword(e.target.value)}/>
 					</div>
 
-					{error && (
-						<div className='rounded-md bg-red-50 p-4'>
-							<div className='text-sm text-red-700'>{error}</div>
-						</div>
-					)}
+					<ErrorDisplay 
+						error={error} 
+						onDismiss={clearError}
+						className="mt-4"
+					/>
 
 					<div>
 						<button

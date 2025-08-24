@@ -347,3 +347,4 @@ describe('SessionManager', () => {
     expect(screen.getByText('Reintentar')).toBeInTheDocument();
   });
 });
+

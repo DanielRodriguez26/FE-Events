@@ -1,4 +1,5 @@
 export { default as ErrorMessage } from './ErrorMessage';
+export { default as ErrorDisplay } from './ErrorDisplay';
 export { default as EventEmpty } from './EventEmpty';
 export { default as InputField } from './InputField';
 export { default as Loading } from './Loading';

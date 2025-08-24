@@ -18,7 +18,7 @@ const myRegistrations = async () => {
 // Servicio para registrar a un evento
 const registerToEvent = async (payload: IRegisterEventPayload) => {
     const response = await post({
-        url: 'register',
+        url: '',
         baseURL: BACKEND_ENDPOINTS.eventRegistration,
         payload,
     });

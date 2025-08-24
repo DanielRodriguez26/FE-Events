@@ -1,13 +1,9 @@
+import type { IUser } from '@/domain/auth/auth.interface';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface UserInfoProps {
-    user: {
-        first_name: string;
-        email: string;
-        phone: string;
-        created_at: string;
-    } | null;
+    user:IUser  | null;
     onLogout: () => void;
 }
 

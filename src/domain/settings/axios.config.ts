@@ -1,5 +1,6 @@
 import axios from 'axios';
 import useStore from '@store/store';
+import { ErrorService } from './error.service';
 
 // Configuración de axios con interceptores
 // Maneja automáticamente la renovación de tokens y errores de autenticación
@@ -60,7 +61,11 @@ axiosInstance.interceptors.response.use(
 			}
 		}
 
-		return Promise.reject(error);
+		// Procesar el error con el servicio de errores
+		const processedError = ErrorService.processAxiosError(error);
+		ErrorService.logError(processedError, 'Axios Interceptor');
+		
+		return Promise.reject(processedError);
 	}
 );
 
