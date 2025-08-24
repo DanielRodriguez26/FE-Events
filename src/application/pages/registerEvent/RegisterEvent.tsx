@@ -28,6 +28,7 @@ const RegisterEvent: React.FC = () => {
 
     // Mostrar mensaje de éxito si viene de una redirección
     const successMessage = location.state?.message;
+    console.log('successMessage', event);
 
     if (isLoading && !event) {
         return (

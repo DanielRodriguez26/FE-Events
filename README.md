@@ -8,6 +8,9 @@ Una aplicación web moderna para la gestión de eventos desarrollada con React, 
 - **Sistema de Autenticación**: Login y registro de usuarios
 - **Perfil de Usuario**: Gestión de información personal y eventos registrados
 - **Sesiones de Eventos**: Visualización y gestión de sesiones dentro de eventos
+- **Gestión de Ponentes**: Administración de speakers para sesiones
+- **Optimistic Updates**: Actualizaciones inmediatas sin recarga de página
+- **Manejo de Errores**: Sistema robusto de manejo y visualización de errores
 - **Interfaz Responsiva**: Diseño adaptativo para dispositivos móviles y desktop
 - **Estado Global**: Gestión de estado con Zustand
 - **Routing**: Navegación con React Router
@@ -48,7 +51,9 @@ src/
 ├── domain/               # Capa de dominio
 │   ├── auth/             # Lógica de autenticación
 │   ├── event/            # Lógica de eventos
+│   ├── event-registration/ # Lógica de registro a eventos
 │   ├── home/             # Lógica de página principal
+│   ├── session/          # Lógica de sesiones
 │   ├── settings/         # Configuraciones
 │   └── speaker/          # Lógica de speakers
 ├── infrastructure/       # Capa de infraestructura
@@ -155,7 +160,9 @@ Se utiliza Zustand para la gestión del estado global, organizado en slices:
 
 - **Auth Store**: Estado de autenticación
 - **Event Store**: Estado de eventos
+- **Event Registration Store**: Estado de registros a eventos
 - **Home Store**: Estado de la página principal
+- **Session Store**: Estado de sesiones
 - **Speaker Store**: Estado de speakers
 
 ## 🎨 Componentes Principales
@@ -167,6 +174,7 @@ Se utiliza Zustand para la gestión del estado global, organizado en slices:
 - **EventDetail**: Detalle completo de un evento
 - **EventCreate**: Formulario de creación de eventos
 - **EventSessions**: Sesiones de un evento específico
+- **SessionManager**: Gestión de sesiones con optimistic updates
 - **Profile**: Perfil del usuario con eventos registrados
 - **Login/Register**: Páginas de autenticación
 
@@ -177,6 +185,9 @@ Se utiliza Zustand para la gestión del estado global, organizado en slices:
 - **Filter**: Filtros de búsqueda
 - **Navbar**: Navegación principal
 - **ProtectedRoute**: Ruta protegida por autenticación
+- **SessionForm**: Formulario de creación/edición de sesiones
+- **SessionList**: Lista de sesiones con acciones
+- **ErrorDisplay**: Componente de visualización de errores
 
 ## 🔐 Autenticación
 
@@ -242,6 +253,15 @@ Para soporte técnico o preguntas:
 - Issues: [GitHub Issues](https://github.com/miseventos/frontend/issues)
 
 ## 🔄 Changelog
+
+### v1.1.0 (2024-08-24)
+- ✅ Gestión de ponentes (speakers) para sesiones
+- ✅ Optimistic updates en gestión de sesiones
+- ✅ Sistema robusto de manejo de errores con ErrorService
+- ✅ Validación de horarios de sesiones
+- ✅ Registro de usuarios a eventos
+- ✅ Perfil de usuario con eventos registrados
+- ✅ Componentes de sesiones reutilizables
 
 ### v1.0.0 (2024-03-15)
 - ✅ Sistema de autenticación completo

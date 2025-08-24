@@ -88,6 +88,7 @@ export const useSessionManager = (eventId: number, propSessions: ISessionDto[] |
                             : session
                     ));
                     setEditingSession(null);
+                    //que recargue la pagina
                 }
                 else {
                     handleError(success, 'SessionManager - handleSubmit');
@@ -154,10 +155,10 @@ export const useSessionManager = (eventId: number, propSessions: ISessionDto[] |
             start_time: session.start_time.slice(0, 16),
             end_time: session.end_time.slice(0, 16),
             speaker: session.speaker?.name || '',
-            room: '',
+            room: '1',
             capacity: session.capacity || 50,
             event_id: eventId,
-            speaker_id: 0
+            speaker_id: session.speaker_id || 0
         });
         setShowCreateForm(true);
     }, []);
@@ -185,6 +186,8 @@ export const useSessionManager = (eventId: number, propSessions: ISessionDto[] |
             if (success && success.statusCode !== 400) {
                 // Remove from local sessions immediately
                 setLocalSessions(prev => prev.filter(session => session.id !== sessionId));
+                //que recargue la pagina
+                window.location.reload();
             }
             else {
                 handleError(success, 'SessionManager - handleDelete');

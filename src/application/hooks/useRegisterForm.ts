@@ -78,6 +78,7 @@ export const useRegisterForm = () => {
 
         const success = await registerToEvent(payload);
         
+        
         if (success) {
             // Redirigir al detalle del evento o mostrar mensaje de éxito
             navigate(`/event/${id}`, { 
@@ -118,6 +119,12 @@ export const useRegisterForm = () => {
         if (!eventById?.start_date) return false;
         return new Date(eventById.start_date) < new Date();
     };
+
+    useEffect(() => {
+        if (id) {
+            setEventById(parseInt(id));
+        }
+    }, [id, setEventById]);
 
     return {
         // Estado
