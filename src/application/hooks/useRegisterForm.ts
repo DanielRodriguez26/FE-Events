@@ -92,7 +92,7 @@ export const useRegisterForm = () => {
     // Cancelar registro
     const handleCancelRegistration = async () => {
         if (currentRegistration?.id) {
-            const success = await useStore.getState().cancelRegistration(currentRegistration.id);
+            const success = await useStore.getState().cancelRegistration(parseInt(id));
             if (success) {
                 navigate(`/event/${id}`, { 
                     state: { 
@@ -123,8 +123,9 @@ export const useRegisterForm = () => {
     useEffect(() => {
         if (id) {
             setEventById(parseInt(id));
+            checkRegistration(parseInt(id));
         }
-    }, [id, setEventById]);
+    }, [id, setEventById, checkRegistration]);
 
     return {
         // Estado

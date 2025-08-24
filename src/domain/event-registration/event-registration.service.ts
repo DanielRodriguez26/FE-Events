@@ -1,4 +1,4 @@
-import { get, post } from '../settings/http.service';
+import { get, post, remove } from '../settings/http.service';
 import { BACKEND_ENDPOINTS } from '../settings/backend.config';
 
 // Interfaz para el payload de registro
@@ -26,9 +26,9 @@ const registerToEvent = async (payload: IRegisterEventPayload) => {
 };
 
 // Servicio para cancelar registro a un evento
-const cancelRegistration = async (registrationId: number) => {
-    const response = await post({
-        url: `cancel/${registrationId}`,
+const cancelRegistration = async (eventId: number) => {
+    const response = await remove({
+        url: `${eventId}`,
         baseURL: BACKEND_ENDPOINTS.eventRegistration,
     });
     return response;
@@ -37,7 +37,7 @@ const cancelRegistration = async (registrationId: number) => {
 // Servicio para verificar si el usuario ya está registrado
 const checkRegistration = async (eventId: number) => {
     const response = await get({
-        url: `check-registration/${eventId}`,
+        url: `check/${eventId}`,
         baseURL: BACKEND_ENDPOINTS.eventRegistration,
     });
     return response;
