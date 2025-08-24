@@ -136,6 +136,9 @@ const EventDetail: React.FC = () => {
                             <button onClick={() => navigate(`/events/session/${eventById.id}`)} className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                                 Ver Sesiones
                             </button>
+                                <button onClick={() => navigate(`/events/session/${eventById.id}/manage`)} className="flex-1 bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                                    Gestionar Sesiones
+                                </button>
                         </div>
                         
                     </div>

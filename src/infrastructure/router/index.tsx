@@ -9,6 +9,7 @@ import RegisterEvent from '@/application/pages/registerEvent/RegisterEvent';
 import EventForm from '@/application/pages/event/EventCreate';
 import Profile from '@/application/pages/profile';
 import EventSessions from '@/application/pages/event/EventSessions';
+import SessionManager from '@/application/pages/session/SessionManager';
 
 // Configuración del router principal de la aplicación
 // Define todas las rutas disponibles y sus componentes correspondientes
@@ -93,6 +94,14 @@ const index = createBrowserRouter([
 		element: (
 			<ProtectedRoute>
 				<EventSessions />
+			</ProtectedRoute>
+		),
+	},
+	{
+		path: '/events/session/:id/manage',
+		element: (
+			<ProtectedRoute>
+				<SessionManager/>
 			</ProtectedRoute>
 		),
 	},

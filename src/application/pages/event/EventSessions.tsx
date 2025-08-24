@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Layout from '@/application/layout/Layout';
 import useStore from '@store/store';
 import Loading from '@/components/ui/Loading';
-import ErrorMessage from '@/components/ui/ErrorMessage';
+import ErrorDisplay from '@/components/ui/ErrorDisplay';
+import { useError } from '@/application/hooks';
+import SessionManager from '@/components/sessions/SessionManagerForm';
+import type { ISessionDto } from '@/domain/session/session.interface';
 
 interface Session {
 	id: number;
@@ -17,18 +20,30 @@ interface Session {
 	registered_attendees: number;
 }
 
+interface Speaker {
+	id: number;
+	name: string;
+	expertise: string[];
+}
+
 const EventSessions: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
-	const { eventById, setEventById } = useStore();
+	const location = useLocation();
+	const { eventById, setEventById, user } = useStore();
 	const [sessions, setSessions] = useState<Session[]>([]);
+	const [ setSpeakers] = useState<Speaker[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const { error, clearError, handleError } = useError();
+
+	// Detectar si estamos en modo "manage" (gestión de sesiones)
+	const isManageMode = location.pathname.includes('/manage');
 
 	useEffect(() => {
 		if (id) {
 			setEventById(parseInt(id));
 			loadSessions();
+			loadSpeakers();
 		}
 	}, [id, setEventById]);
 
@@ -36,7 +51,7 @@ const EventSessions: React.FC = () => {
 		if (!id) return;
 		
 		setLoading(true);
-		setError(null);
+		clearError();
 
 		try {
 			// Llamada real a la API para obtener sesiones del evento
@@ -48,16 +63,16 @@ const EventSessions: React.FC = () => {
 			
 			if (sessionsByEvent && sessionsByEvent.items) {
 				// Convertir sesiones de la API al formato local
-				const sessionsFromAPI: Session[] = sessionsByEvent.items.map((session: any) => ({
+				const sessionsFromAPI: Session[] = sessionsByEvent.items.map((session: ISessionDto) => ({
 					id: session.id,
 					title: session.title,
 					description: session.description || 'Sin descripción',
 					start_time: session.start_time,
 					end_time: session.end_time,
 					speaker: session.speaker?.name || 'Ponente por confirmar',
-					room: session.room || 'Sala por asignar',
+					room: 'Sala por asignar', // No disponible en la API actual
 					capacity: session.capacity || 0,
-					registered_attendees: session.registered_attendees || 0,
+					registered_attendees: 0, // No disponible en la API actual
 				}));
 				
 				setSessions(sessionsFromAPI);
@@ -65,10 +80,58 @@ const EventSessions: React.FC = () => {
 				setSessions([]);
 			}
 		} catch (err) {
-			setError('Error al cargar las sesiones del evento');
-			console.error('Error loading sessions:', err);
+			handleError(err, 'EventSessions - loadSessions');
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const loadSpeakers = async () => {
+		// Mock de speakers - en un caso real, esto vendría de la API
+		const mockSpeakers: Speaker[] = [
+			{
+				id: 1,
+				name: 'Dr. Juan Pérez',
+				expertise: ['React', 'TypeScript', 'Frontend']
+			},
+			{
+				id: 2,
+				name: 'Ing. María García',
+				expertise: ['Python', 'FastAPI', 'Backend']
+			},
+			{
+				id: 3,
+				name: 'Lic. Carlos López',
+				expertise: ['DevOps', 'Docker', 'CI/CD']
+			}
+		];
+		setSpeakers(mockSpeakers);
+	};
+
+	const handleSessionCreate = async () => {
+		try {
+			// Recargar sesiones después de crear una nueva
+			await loadSessions();
+		} catch (err) {
+			console.error('Error al crear sesión:', err);
+		}
+	};
+
+	const handleSessionUpdate = async () => {
+		try {
+			// Recargar sesiones después de actualizar
+			await loadSessions();
+		} catch (err) {
+			console.error('Error al actualizar sesión:', err);
+		}
+	};
+
+	const handleSessionDelete = async () => {
+		try {
+			// Recargar sesiones después de eliminar
+			await loadSessions();
+		} catch (err) {
+			console.error('Error al eliminar sesión:', err);
 		}
 	};
 
@@ -76,23 +139,8 @@ const EventSessions: React.FC = () => {
 		navigate(`/events/session/${id}/detail/${session.id}`);
 	};
 
-	// const handleRegisterSession = (_session: Session) => {
-	// 	// Implementar registro a sesión
-	// };
-
-	const getAvailabilityColor = (registered: number, capacity: number) => {
-		const percentage = (registered / capacity) * 100;
-		if (percentage >= 90) return 'text-red-600';
-		if (percentage >= 75) return 'text-yellow-600';
-		return 'text-green-600';
-	};
-
-	const getAvailabilityText = (registered: number, capacity: number) => {
-		const percentage = (registered / capacity) * 100;
-		if (percentage >= 90) return 'Casi lleno';
-		if (percentage >= 75) return 'Pocos cupos';
-		return 'Disponible';
-	};
+	// Verificar si el usuario es organizador del evento
+	const isOrganizer = user && eventById && (user.username === eventById.organizer);
 
 	if (loading) {
 		return (
@@ -105,9 +153,19 @@ const EventSessions: React.FC = () => {
 	if (error) {
 		return (
 			<Layout>
-				<ErrorMessage error={error} />
+				<ErrorDisplay 
+					error={error} 
+					onDismiss={clearError}
+					onRetry={loadSessions}
+				/>
 			</Layout>
 		);
+	}
+
+	// Si estamos en modo "manage" y el usuario no es organizador, redirigir
+	if (isManageMode && !isOrganizer) {
+		navigate(`/events/session/${id}`);
+		return null;
 	}
 
 	return (
@@ -125,7 +183,9 @@ const EventSessions: React.FC = () => {
 					</button>
 
 					<div className='bg-white rounded-lg shadow-lg p-6'>
-						<h1 className='text-3xl font-bold text-gray-900 mb-2'>Sesiones - {eventById?.title || 'Evento'}</h1>
+						<h1 className='text-3xl font-bold text-gray-900 mb-2'>
+							{isManageMode ? 'Gestionar Sesiones' : 'Sesiones'} - {eventById?.title || 'Evento'}
+						</h1>
 						<p className='text-gray-600'>{eventById?.description || 'Descripción del evento'}</p>
 						<div className='mt-4 flex items-center text-sm text-gray-500'>
 							<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -141,90 +201,101 @@ const EventSessions: React.FC = () => {
 					</div>
 				</div>
 
-				{/* Lista de sesiones */}
-				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-					{sessions.map(session => (
-						<div
-							key={session.id}
-							className='bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow'>
-							<div className='p-6'>
-								<div className='flex justify-between items-start mb-4'>
-									<h3 className='text-xl font-semibold text-gray-900'>{session.title}</h3>
-									<span
-										className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAvailabilityColor(
-											session.registered_attendees,
-											session.capacity
-										)}`}>
-										{getAvailabilityText(session.registered_attendees, session.capacity)}
-									</span>
-								</div>
+				{/* SessionManager para organizadores */}
 
-								<p className='text-gray-600 mb-4'>{session.description}</p>
-
-								<div className='space-y-3 mb-4'>
-									<div className='flex items-center text-sm text-gray-500'>
-										<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												strokeWidth={2}
-												d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-											/>
-										</svg>
-										{new Date(session.start_time).toLocaleTimeString()} -{' '}
-										{new Date(session.end_time).toLocaleTimeString()}
+				{/* Lista de sesiones para todos los usuarios (solo si no estamos en modo manage) */}
+				{!isManageMode && (
+					<div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+						{sessions.map(session => (
+							<div
+								key={session.id}
+								className='bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow'>
+								<div className='p-6'>
+									<div className='flex justify-between items-start mb-4'>
+										<h3 className='text-xl font-semibold text-gray-900'>{session.title}</h3>
+										<span
+											className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+												session.registered_attendees >= session.capacity * 0.9 
+													? 'bg-red-100 text-red-800' 
+													: session.registered_attendees >= session.capacity * 0.75
+													? 'bg-yellow-100 text-yellow-800'
+													: 'bg-green-100 text-green-800'
+											}`}>
+											{session.registered_attendees >= session.capacity * 0.9 
+												? 'Casi lleno' 
+												: session.registered_attendees >= session.capacity * 0.75
+												? 'Pocos cupos'
+												: 'Disponible'}
+										</span>
 									</div>
 
-									<div className='flex items-center text-sm text-gray-500'>
-										<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												strokeWidth={2}
-												d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-											/>
-										</svg>
-										{session.speaker}
+									<p className='text-gray-600 mb-4'>{session.description}</p>
+
+									<div className='space-y-3 mb-4'>
+										<div className='flex items-center text-sm text-gray-500'>
+											<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+												/>
+											</svg>
+											{new Date(session.start_time).toLocaleTimeString()} -{' '}
+											{new Date(session.end_time).toLocaleTimeString()}
+										</div>
+
+										<div className='flex items-center text-sm text-gray-500'>
+											<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+												/>
+											</svg>
+											{session.speaker}
+										</div>
+
+										<div className='flex items-center text-sm text-gray-500'>
+											<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'
+												/>
+											</svg>
+											{session.room}
+										</div>
+
+										<div className='flex items-center text-sm text-gray-500'>
+											<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
+												/>
+											</svg>
+											{session.registered_attendees}/{session.capacity} asistentes
+										</div>
 									</div>
 
-									<div className='flex items-center text-sm text-gray-500'>
-										<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												strokeWidth={2}
-												d='M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'
-											/>
-										</svg>
-										{session.room}
+									<div className='flex gap-3'>
+										<button
+											onClick={() => handleSessionClick(session)}
+											className='flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'>
+											Ver Detalles
+										</button>
 									</div>
-
-									<div className='flex items-center text-sm text-gray-500'>
-										<svg className='w-4 h-4 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												strokeWidth={2}
-												d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
-											/>
-										</svg>
-										{session.registered_attendees}/{session.capacity} asistentes
-									</div>
-								</div>
-
-								<div className='flex gap-3'>
-									<button
-										onClick={() => handleSessionClick(session)}
-										className='flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'>
-										Ver Detalles
-									</button>
 								</div>
 							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				)}
 
-				{sessions.length === 0 && (
+				{sessions.length === 0 && !isOrganizer && !isManageMode && (
 					<div className='text-center py-12'>
 						<svg
 							className='w-16 h-16 text-gray-400 mx-auto mb-4'

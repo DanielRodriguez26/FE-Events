@@ -17,7 +17,7 @@ interface ISessionStore {
 	createSession: (sessionData: ISessionCreateDto) => Promise<boolean>;
 	updateSession: (sessionId: number, sessionData: ISessionUpdateDto) => Promise<boolean>;
 	deleteSession: (sessionId: number) => Promise<boolean>;
-	createEventSession: (eventId: number, sessionData: Omit<ISessionCreateDto, 'event_id'>) => Promise<boolean>;
+	createEventSession: (sessionData: Omit<ISessionCreateDto, 'event_id'>) => Promise<boolean>;
 	clearError: () => void;
 	setLoading: (loading: boolean) => void;
 }
@@ -54,6 +54,7 @@ const createSessionState = (set: SetState<ISessionStore>): ISessionStore => ({
 
 	// Crear sesión
 	createSession: async (sessionData: ISessionCreateDto) => {
+		console.log('sessionData', sessionData);
 		const newSession = await sessionServices.createSession(sessionData);
 		set({
 			currentSession: newSession,
@@ -83,8 +84,8 @@ const createSessionState = (set: SetState<ISessionStore>): ISessionStore => ({
 	},
 
 	// Crear sesión para evento específico
-	createEventSession: async (eventId: number, sessionData: Omit<ISessionCreateDto, 'event_id'>) => {
-		const newSession = await sessionServices.createEventSession(eventId, sessionData);
+	createEventSession: async (sessionData: Omit<ISessionCreateDto, 'event_id'>) => {
+		const newSession = await sessionServices.createEventSession(sessionData);
 		set({
 				currentSession: newSession,
 				isLoading: false,

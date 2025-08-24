@@ -97,6 +97,13 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
                         {ErrorService.getUserFriendlyMessage(error)}
                     </p>
                     
+                    {/* Mostrar mensaje específico si es diferente del mensaje principal */}
+                    {error.originalError?.detail && error.originalError.detail !== ErrorService.getUserFriendlyMessage(error) && (
+                        <p className="mt-2 text-xs opacity-90">
+                            <strong>Detalle:</strong> {error.originalError.detail}
+                        </p>
+                    )}
+                    
                     {showDetails && error.details && error.details.length > 0 && (
                         <div className="mt-3">
                             <h4 className="text-xs font-medium mb-2">Detalles del error:</h4>

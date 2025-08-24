@@ -94,11 +94,11 @@ const deleteSession = async (sessionId: number): Promise<{ message: string }> =>
 };
 
 // Crear sesión para un evento específico
-const createEventSession = async (eventId: number, sessionData: Omit<ISessionCreateDto, 'event_id'>): Promise<ISessionDto> => {
+const createEventSession = async (sessionData: Omit<ISessionCreateDto, 'event_id'>): Promise<ISessionDto> => {
     try {
         const response = await post<ISessionDto>({
-            url: `${eventId}/sessions`,
-            baseURL: BACKEND_ENDPOINTS.events,
+            url: ``,
+            baseURL: BACKEND_ENDPOINTS.sessions,
             payload: sessionData,
         });
         return response;

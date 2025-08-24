@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState,  useCallback } from 'react';
 import useStore from '@store/store';
-import type { ISessionDto, ISessionCreateDto, ISessionUpdateDto } from '@/domain/session/session.interface';
+import type { ISessionDto, ISessionCreateDto, ISessionUpdateDto, IPaginatedSessionsResponse } from '@/domain/session/session.interface';
 
 interface UseSessionsReturn {
     sessions: ISessionDto[] | null;
     currentSession: ISessionDto | null;
-    sessionsByEvent: any | null;
+    sessionsByEvent: IPaginatedSessionsResponse | null;
     loading: boolean;
     error: string | null;
     loadSessions: (page?: number, size?: number) => Promise<void>;
@@ -14,7 +14,7 @@ interface UseSessionsReturn {
     createSession: (sessionData: ISessionCreateDto) => Promise<boolean>;
     updateSession: (sessionId: number, sessionData: ISessionUpdateDto) => Promise<boolean>;
     deleteSession: (sessionId: number) => Promise<boolean>;
-    createEventSession: (eventId: number, sessionData: Omit<ISessionCreateDto, 'event_id'>) => Promise<boolean>;
+    createEventSession: (sessionData: Omit<ISessionCreateDto, 'event_id'>) => Promise<boolean>;
     clearError: () => void;
 }
 
@@ -90,7 +90,7 @@ export const useSessions = (): UseSessionsReturn => {
             return success;
         } catch (err) {
             console.error('Error updating session:', err);
-            return false;
+            return err;
         } finally {
             setLocalLoading(false);
         }
@@ -103,7 +103,7 @@ export const useSessions = (): UseSessionsReturn => {
             return success;
         } catch (err) {
             console.error('Error deleting session:', err);
-            return false;
+            return err;
         } finally {
             setLocalLoading(false);
         }
@@ -115,8 +115,8 @@ export const useSessions = (): UseSessionsReturn => {
             const success = await createEventSessionAction(eventId, sessionData);
             return success;
         } catch (err) {
-            console.error('Error creating event session:', err);
-            return false;
+            console.log('Error creating event session:', err.originalError.detail); 
+            return err;
         } finally {
             setLocalLoading(false);
         }

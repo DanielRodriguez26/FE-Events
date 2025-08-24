@@ -21,8 +21,6 @@ interface SessionScheduleProps {
 
 const SessionSchedule: React.FC<SessionScheduleProps> = ({ 
     sessions, 
-    eventStartDate, 
-    eventEndDate 
 }) => {
     // Agrupar sesiones por día
     const groupSessionsByDay = (sessions: Session[]) => {
@@ -118,7 +116,7 @@ const SessionSchedule: React.FC<SessionScheduleProps> = ({
                         </div>
                         
                         <div className="divide-y divide-gray-200">
-                            {groupedSessions[day].map((session, index) => (
+                            {groupedSessions[day].map((session) => (
                                 <div key={session.id} className="p-6 hover:bg-gray-50 transition-colors">
                                     <div className="flex items-start space-x-4">
                                         {/* Indicador de tiempo */}

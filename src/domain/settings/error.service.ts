@@ -1,11 +1,10 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import type { 
     IErrorResponse, 
     IFrontendError, 
-    ErrorType,
-    createFrontendError,
-    convertBackendError 
+    ErrorType
 } from './error.interface';
+import { createFrontendError, convertBackendError } from './error.interface';
 
 // Servicio para manejar errores de manera centralizada
 export class ErrorService {
@@ -53,21 +52,25 @@ export class ErrorService {
     /**
      * Verifica si el error es estructurado (del backend)
      */
-    private static isStructuredError(data: any): data is IErrorResponse {
+    private static isStructuredError(data: unknown): data is IErrorResponse {
         return (
-            data &&
+            data !== null &&
             typeof data === 'object' &&
+            'success' in data &&
             data.success === false &&
-            typeof data.error === 'string' &&
-            typeof data.message === 'string' &&
-            typeof data.status_code === 'number'
+            'error' in data &&
+            typeof (data as Record<string, unknown>).error === 'string' &&
+            'message' in data &&
+            typeof (data as Record<string, unknown>).message === 'string' &&
+            'status_code' in data &&
+            typeof (data as Record<string, unknown>).status_code === 'number'
         );
     }
     
     /**
      * Crea un error basado en el código de estado HTTP
      */
-    private static createErrorFromStatusCode(status: number, data: any): IFrontendError {
+    private static createErrorFromStatusCode(status: number, data: unknown): IFrontendError {
         let type: ErrorType;
         let message: string;
         
@@ -103,12 +106,12 @@ export class ErrorService {
             case 502:
             case 503:
             case 504:
-                type = "Server Error";
+                type = "Internal Server Error";
                 message = "El servidor no está disponible en este momento";
                 break;
             default:
                 type = "Unknown Error";
-                message = `Error ${status}: ${data?.message || 'Error desconocido'}`;
+                message = `Error ${status}: ${(data as Record<string, unknown>)?.message || 'Error desconocido'}`;
         }
         
         return createFrontendError(
@@ -167,8 +170,20 @@ export class ErrorService {
     
     /**
      * Obtiene un mensaje de error amigable para el usuario
+     * Prioriza el mensaje específico del originalError.detail si existe
      */
     static getUserFriendlyMessage(error: IFrontendError): string {
+        // Si hay un mensaje específico en originalError.detail, usarlo
+        if (error.originalError?.detail) {
+            return error.originalError.detail;
+        }
+        
+        // Si hay detalles específicos, usar el primer mensaje
+        if (error.details && error.details.length > 0) {
+            return error.details[0].message;
+        }
+        
+        // Fallback a mensajes genéricos por tipo
         switch (error.type) {
             case "Validation Error":
                 return "Por favor, verifica los datos ingresados y vuelve a intentar.";
