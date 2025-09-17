@@ -1,4 +1,3 @@
-import React from 'react';
 import type { TimeValidationResult } from '@/utils/timeValidation';
 import type { ISessionDto } from '@/domain/session/session.interface';
 import type { ISpeakerDto } from '@/domain/speaker/speaker.interface';
@@ -12,8 +11,8 @@ interface SessionFormProps {
 		speaker: string;
 		room: string;
 		capacity: number;
-        event_id: number;
-        speaker_id: number;
+		event_id: number;
+		speaker_id: number;
 	};
 	editingSession: ISessionDto | null;
 	speakers: ISpeakerDto[] | null;
@@ -181,7 +180,7 @@ const SessionForm: React.FC<SessionFormProps> = ({
 						className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'>
 						<option value=''>Seleccionar ponente...</option>
 						{speakers?.map(speaker => (
-							<option key={speaker.id} value={speaker.id} >
+							<option key={speaker.id} value={speaker.id}>
 								{speaker.name} {speaker.company ? `- ${speaker.company}` : ''}
 							</option>
 						))}

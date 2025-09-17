@@ -1,5 +1,5 @@
 import axios from 'axios';
-import useStore from '@store/store';
+import useStore from '@infrastructure/store/store';
 import { ErrorService } from './error.service';
 
 // Configuración de axios con interceptores
@@ -10,30 +10,30 @@ const axiosInstance = axios.create({
 	timeout: 10000, // 10 segundos
 	headers: {
 		'Content-Type': 'application/json',
-		'Accept': 'application/json',
+		Accept: 'application/json',
 	},
 });
 
 // Interceptor para agregar token a todas las peticiones
 axiosInstance.interceptors.request.use(
-	(config) => {
+	config => {
 		const token = useStore.getState().token;
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
 		return config;
 	},
-	(error) => {
+	error => {
 		return Promise.reject(error);
 	}
 );
 
 // Interceptor para manejar respuestas y renovación de tokens
 axiosInstance.interceptors.response.use(
-	(response) => {
+	response => {
 		return response;
 	},
-	async (error) => {
+	async error => {
 		const originalRequest = error.config;
 
 		// Si el error es 401 (no autorizado) y no hemos intentado renovar el token
@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(
 			try {
 				// Intentar renovar el token
 				const success = await useStore.getState().refreshTokenAction();
-				
+
 				if (success) {
 					// Obtener el nuevo token
 					const newToken = useStore.getState().token;
@@ -64,7 +64,7 @@ axiosInstance.interceptors.response.use(
 		// Procesar el error con el servicio de errores
 		const processedError = ErrorService.processAxiosError(error);
 		ErrorService.logError(processedError, 'Axios Interceptor');
-		
+
 		return Promise.reject(processedError);
 	}
 );

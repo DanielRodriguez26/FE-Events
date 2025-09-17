@@ -101,7 +101,7 @@ const index = createBrowserRouter([
 		path: '/events/session/:id/manage',
 		element: (
 			<ProtectedRoute>
-				<SessionManager/>
+				<SessionManager />
 			</ProtectedRoute>
 		),
 	},

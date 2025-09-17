@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Layout from '@/application/layout/Layout';
-import useStore from '@store/store';
+import useStore from '@infrastructure/store/store';
 import Loading from '@/components/ui/Loading';
 import ErrorDisplay from '@/components/ui/ErrorDisplay';
 import { useError } from '@/application/hooks';
@@ -32,7 +32,7 @@ const EventSessions: React.FC = () => {
 	const location = useLocation();
 	const { eventById, setEventById, user } = useStore();
 	const [sessions, setSessions] = useState<Session[]>([]);
-	const [ setSpeakers] = useState<Speaker[]>([]);
+	const [setSpeakers] = useState<Speaker[]>([]);
 	const [loading, setLoading] = useState(false);
 	const { error, clearError, handleError } = useError();
 
@@ -49,7 +49,7 @@ const EventSessions: React.FC = () => {
 
 	const loadSessions = async () => {
 		if (!id) return;
-		
+
 		setLoading(true);
 		clearError();
 
@@ -57,10 +57,10 @@ const EventSessions: React.FC = () => {
 			// Llamada real a la API para obtener sesiones del evento
 			const { setSessionsByEvent } = useStore.getState();
 			await setSessionsByEvent(parseInt(id));
-			
+
 			// Obtener las sesiones del store
 			const { sessionsByEvent } = useStore.getState();
-			
+
 			if (sessionsByEvent && sessionsByEvent.items) {
 				// Convertir sesiones de la API al formato local
 				const sessionsFromAPI: Session[] = sessionsByEvent.items.map((session: ISessionDto) => ({
@@ -74,7 +74,7 @@ const EventSessions: React.FC = () => {
 					capacity: session.capacity || 0,
 					registered_attendees: 0, // No disponible en la API actual
 				}));
-				
+
 				setSessions(sessionsFromAPI);
 			} else {
 				setSessions([]);
@@ -92,18 +92,18 @@ const EventSessions: React.FC = () => {
 			{
 				id: 1,
 				name: 'Dr. Juan Pérez',
-				expertise: ['React', 'TypeScript', 'Frontend']
+				expertise: ['React', 'TypeScript', 'Frontend'],
 			},
 			{
 				id: 2,
 				name: 'Ing. María García',
-				expertise: ['Python', 'FastAPI', 'Backend']
+				expertise: ['Python', 'FastAPI', 'Backend'],
 			},
 			{
 				id: 3,
 				name: 'Lic. Carlos López',
-				expertise: ['DevOps', 'Docker', 'CI/CD']
-			}
+				expertise: ['DevOps', 'Docker', 'CI/CD'],
+			},
 		];
 		setSpeakers(mockSpeakers);
 	};
@@ -140,7 +140,7 @@ const EventSessions: React.FC = () => {
 	};
 
 	// Verificar si el usuario es organizador del evento
-	const isOrganizer = user && eventById && (user.username === eventById.organizer);
+	const isOrganizer = user && eventById && user.username === eventById.organizer;
 
 	if (loading) {
 		return (
@@ -153,11 +153,7 @@ const EventSessions: React.FC = () => {
 	if (error) {
 		return (
 			<Layout>
-				<ErrorDisplay 
-					error={error} 
-					onDismiss={clearError}
-					onRetry={loadSessions}
-				/>
+				<ErrorDisplay error={error} onDismiss={clearError} onRetry={loadSessions} />
 			</Layout>
 		);
 	}
@@ -215,14 +211,14 @@ const EventSessions: React.FC = () => {
 										<h3 className='text-xl font-semibold text-gray-900'>{session.title}</h3>
 										<span
 											className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-												session.registered_attendees >= session.capacity * 0.9 
-													? 'bg-red-100 text-red-800' 
+												session.registered_attendees >= session.capacity * 0.9
+													? 'bg-red-100 text-red-800'
 													: session.registered_attendees >= session.capacity * 0.75
 													? 'bg-yellow-100 text-yellow-800'
 													: 'bg-green-100 text-green-800'
 											}`}>
-											{session.registered_attendees >= session.capacity * 0.9 
-												? 'Casi lleno' 
+											{session.registered_attendees >= session.capacity * 0.9
+												? 'Casi lleno'
 												: session.registered_attendees >= session.capacity * 0.75
 												? 'Pocos cupos'
 												: 'Disponible'}

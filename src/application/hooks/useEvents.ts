@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useStore from '@store/store';
+import useStore from '@infrastructure/store/store';
 import type { IEventDto, IEventFilter } from '@domain/event/event.interface';
 
 // Hook personalizado para manejar la lógica de eventos
@@ -88,15 +88,14 @@ export const useEvents = (initialPageSize: number = 20) => {
 	const handleEventClick = async (event: IEventDto) => {
 		await setEventById(event.id);
 		// Navegar al detalle del evento
-        navigate(`/event/${event.id}`);
+		navigate(`/event/${event.id}`);
 	};
-    
+
 	// Función para manejar el clic en eliminar
 	const handleDeleteClick = async (event: IEventDto) => {
-        
 		await setDeleteEvent(event.id);
-        //quiero que se actualice la lista de eventos
-        loadEvents(currentPage, pageSize);
+		//quiero que se actualice la lista de eventos
+		loadEvents(currentPage, pageSize);
 
 		// Aquí se puede implementar la lógica de favoritos
 	};

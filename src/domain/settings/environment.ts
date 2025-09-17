@@ -6,7 +6,7 @@ import { BACKEND_ENDPOINTS } from './backend.config';
 
 // URL base del servidor de desarrollo
 // Punto de entrada principal para las peticiones HTTP
-const ENDPOINT = 'http://127.0.0.1:5173/'
+const ENDPOINT = 'http://127.0.0.1:5173/';
 
 // Configuración de microservicios
 // Define las rutas específicas para cada servicio de la API

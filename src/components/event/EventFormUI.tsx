@@ -1,6 +1,3 @@
-import React from 'react';
-
-
 interface EventFormUIProps {
 	formData: {
 		title: string;

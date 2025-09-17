@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useStore from '@store/store';
+import useStore from '@infrastructure/store/store';
 
 // Hook personalizado para manejar la autenticación
 // Proporciona métodos convenientes y lógica de autenticación
@@ -14,7 +14,7 @@ export const useAuth = () => {
 		isAuthenticated,
 		isLoading,
 		error,
-		
+
 		// Acciones
 		login,
 		register,
@@ -57,7 +57,7 @@ export const useAuth = () => {
 	// Función para obtener el token de autorización para peticiones HTTP
 	const getAuthHeaders = () => {
 		if (!token) return {};
-		
+
 		return {
 			Authorization: `Bearer ${token}`,
 		};
@@ -70,14 +70,14 @@ export const useAuth = () => {
 		isAuthenticated,
 		isLoading,
 		error,
-		
+
 		// Acciones
 		login,
 		register,
 		logout,
 		clearError,
 		setLoading,
-		
+
 		// Utilidades
 		checkAndRefreshToken,
 		getAuthHeaders,

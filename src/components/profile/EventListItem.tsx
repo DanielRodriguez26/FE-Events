@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { IEventRegistrationDto } from '@/domain/event-registration/event-registration.interface';
 

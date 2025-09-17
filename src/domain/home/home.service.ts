@@ -1,5 +1,5 @@
 import { get } from '../settings/http.service';
-import { MICROSERVICES } from '../settings/envairoment';
+import { MICROSERVICES } from '../settings/environment';
 import type { IPaginatedEventsResponse } from './home.interface';
 
 // Extracción de la URL del microservicio de eventos desde la configuración
@@ -10,14 +10,14 @@ const event = `${_event}`;
 // Retorna una promesa con la respuesta paginada de eventos
 const getAllEvents = async (page: number = 1, size: number = 6): Promise<IPaginatedEventsResponse> => {
 	console.log('🔍 Intentando cargar eventos desde:', event, 'página:', page, 'tamaño:', size);
-	
+
 	try {
 		// Realiza la petición GET al endpoint de eventos con parámetros de paginación
 		const res = get<IPaginatedEventsResponse>({
 			url: `?page=${page}&size=${size}`, // Agregar parámetros de paginación
 			baseURL: event, // Usamos la URL completa del backend
 		});
-		
+
 		// Espera la respuesta
 		const json = await res;
 		console.log('✅ Eventos cargados exitosamente:', json);

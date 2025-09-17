@@ -1,7 +1,7 @@
 import type { SetState } from 'zustand';
 import { loginUser, registerUser, refreshUserToken, logoutUser } from './auth.service';
 import type { IAuthStore, ILoginCredentials, IRegisterCredentials } from './auth.interface';
-import useStore from '@store/store';
+import useStore from '@infrastructure/store/store';
 
 // Estado inicial de autenticación
 const createAuthInitialState = {
@@ -20,13 +20,11 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 
 	// Acciones
 	login: async (credentials: ILoginCredentials) => {
-
 		set({ isLoading: true, error: null });
-		
+
 		try {
 			const response = await loginUser(credentials);
 
-			
 			set({
 				user: response.user || null,
 				token: response.token,
@@ -35,7 +33,6 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 				isLoading: false,
 				error: null,
 			});
-			
 
 			return true;
 		} catch (error) {
@@ -51,10 +48,10 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 
 	register: async (credentials: IRegisterCredentials) => {
 		set({ isLoading: true, error: null });
-		
+
 		try {
 			const response = await registerUser(credentials);
-			
+
 			set({
 				user: response.user || null,
 				token: response.token || null,
@@ -63,9 +60,9 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 				isLoading: false,
 				error: null,
 			});
-			
-						// Estado actualizado correctamente
-			
+
+			// Estado actualizado correctamente
+
 			return true;
 		} catch (error) {
 			console.error('❌ Error en registro store:', error);
@@ -86,7 +83,7 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 				// Error handled silently
 			});
 		}
-		
+
 		// Limpiar estado local
 		set({
 			user: null,
@@ -105,10 +102,10 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 		}
 
 		set({ isLoading: true, error: null });
-		
+
 		try {
 			const response = await refreshUserToken(currentState.refreshToken);
-			
+
 			set({
 				token: response.token,
 				refreshToken: response.refreshToken || currentState.refreshToken,
@@ -116,7 +113,7 @@ const createAuthState = (set: SetState<IAuthStore>): IAuthStore => ({
 				isLoading: false,
 				error: null,
 			});
-			
+
 			return true;
 		} catch {
 			// Si falla el refresh, hacer logout

@@ -1,5 +1,5 @@
 import { get, post, remove, put } from '../settings/http.service';
-import { MICROSERVICES } from '../settings/envairoment';
+import { MICROSERVICES } from '../settings/environment';
 import type { IEventDto, IPaginatedEventsResponse, IEventFilter } from './event.interface';
 
 // Extracción de la URL del microservicio de eventos desde la configuración

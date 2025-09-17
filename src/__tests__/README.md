@@ -62,7 +62,8 @@ npm run test:coverage
 Cada archivo de prueba sigue esta estructura:
 
 ```typescript
-import React from 'react';
+
+
 import { render, screen, fireEvent } from '@testing-library/react';
 import ComponentName from '@path/to/component';
 

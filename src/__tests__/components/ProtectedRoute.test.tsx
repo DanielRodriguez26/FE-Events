@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import { useAuth } from '@application/hooks';
@@ -6,432 +5,432 @@ import ProtectedRoute from '@components/common/ProtectedRoute';
 
 // Mock del hook useAuth
 jest.mock('@application/hooks', () => ({
-  useAuth: jest.fn(),
+	useAuth: jest.fn(),
 }));
 
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
 // Mock de react-router-dom
 jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  Navigate: ({ to, state, replace }: any) => (
-    <div data-testid="navigate" data-to={to} data-state={JSON.stringify(state)} data-replace={replace}>
-      Navigate to {to}
-    </div>
-  ),
-  useLocation: () => ({ pathname: '/protected', search: '', hash: '', state: null }),
+	...jest.requireActual('react-router-dom'),
+	Navigate: ({ to, state, replace }: any) => (
+		<div data-testid='navigate' data-to={to} data-state={JSON.stringify(state)} data-replace={replace}>
+			Navigate to {to}
+		</div>
+	),
+	useLocation: () => ({ pathname: '/protected', search: '', hash: '', state: null }),
 }));
 
-const TestComponent = () => <div data-testid="protected-content">Protected Content</div>;
+const TestComponent = () => <div data-testid='protected-content'>Protected Content</div>;
 
 describe('ProtectedRoute Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
 
-  describe('Estado de carga', () => {
-    test('muestra loading cuando isLoading es true', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: true,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+	describe('Estado de carga', () => {
+		test('muestra loading cuando isLoading es true', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: true,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      expect(screen.getByRole('generic')).toHaveClass('animate-spin');
-      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
-    });
-  });
+			expect(screen.getByRole('generic')).toHaveClass('animate-spin');
+			expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
+		});
+	});
 
-  describe('Rutas que requieren autenticación', () => {
-    test('redirige a login cuando usuario no está autenticado', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: false,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+	describe('Rutas que requieren autenticación', () => {
+		test('redirige a login cuando usuario no está autenticado', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: false,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      const navigateElement = screen.getByTestId('navigate');
-      expect(navigateElement).toBeInTheDocument();
-      expect(navigateElement).toHaveAttribute('data-to', '/login');
-      expect(navigateElement).toHaveAttribute('data-replace', 'true');
-      
-      const state = JSON.parse(navigateElement.getAttribute('data-state') || '{}');
-      expect(state.from.pathname).toBe('/protected');
-    });
+			const navigateElement = screen.getByTestId('navigate');
+			expect(navigateElement).toBeInTheDocument();
+			expect(navigateElement).toHaveAttribute('data-to', '/login');
+			expect(navigateElement).toHaveAttribute('data-replace', 'true');
 
-    test('redirige a ruta personalizada cuando se especifica redirectTo', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: false,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			const state = JSON.parse(navigateElement.getAttribute('data-state') || '{}');
+			expect(state.from.pathname).toBe('/protected');
+		});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute redirectTo="/custom-login">
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+		test('redirige a ruta personalizada cuando se especifica redirectTo', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: false,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      const navigateElement = screen.getByTestId('navigate');
-      expect(navigateElement).toHaveAttribute('data-to', '/custom-login');
-    });
+			render(
+				<BrowserRouter>
+					<ProtectedRoute redirectTo='/custom-login'>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-    test('renderiza contenido cuando usuario está autenticado', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: true,
-        isLoading: false,
-        user: { id: '1', name: 'Test User', email: 'test@example.com' },
-        token: 'valid-token',
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			const navigateElement = screen.getByTestId('navigate');
+			expect(navigateElement).toHaveAttribute('data-to', '/custom-login');
+		});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+		test('renderiza contenido cuando usuario está autenticado', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: true,
+				isLoading: false,
+				user: { id: '1', name: 'Test User', email: 'test@example.com' },
+				token: 'valid-token',
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      expect(screen.getByTestId('protected-content')).toBeInTheDocument();
-      expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
-    });
-  });
+			render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-  describe('Rutas que no requieren autenticación', () => {
-    test('redirige a home cuando usuario autenticado accede a ruta pública', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: true,
-        isLoading: false,
-        user: { id: '1', name: 'Test User', email: 'test@example.com' },
-        token: 'valid-token',
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			expect(screen.getByTestId('protected-content')).toBeInTheDocument();
+			expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+		});
+	});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute requireAuth={false}>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+	describe('Rutas que no requieren autenticación', () => {
+		test('redirige a home cuando usuario autenticado accede a ruta pública', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: true,
+				isLoading: false,
+				user: { id: '1', name: 'Test User', email: 'test@example.com' },
+				token: 'valid-token',
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      const navigateElement = screen.getByTestId('navigate');
-      expect(navigateElement).toBeInTheDocument();
-      expect(navigateElement).toHaveAttribute('data-to', '/');
-      expect(navigateElement).toHaveAttribute('data-replace', 'true');
-    });
+			render(
+				<BrowserRouter>
+					<ProtectedRoute requireAuth={false}>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-    test('renderiza contenido cuando usuario no autenticado accede a ruta pública', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: false,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			const navigateElement = screen.getByTestId('navigate');
+			expect(navigateElement).toBeInTheDocument();
+			expect(navigateElement).toHaveAttribute('data-to', '/');
+			expect(navigateElement).toHaveAttribute('data-replace', 'true');
+		});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute requireAuth={false}>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+		test('renderiza contenido cuando usuario no autenticado accede a ruta pública', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: false,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      expect(screen.getByTestId('protected-content')).toBeInTheDocument();
-      expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
-    });
-  });
+			render(
+				<BrowserRouter>
+					<ProtectedRoute requireAuth={false}>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-  describe('Preservación del estado de navegación', () => {
-    test('preserva la ubicación actual en el estado de navegación', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: false,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			expect(screen.getByTestId('protected-content')).toBeInTheDocument();
+			expect(screen.queryByTestId('navigate')).not.toBeInTheDocument();
+		});
+	});
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+	describe('Preservación del estado de navegación', () => {
+		test('preserva la ubicación actual en el estado de navegación', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: false,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      const navigateElement = screen.getByTestId('navigate');
-      const state = JSON.parse(navigateElement.getAttribute('data-state') || '{}');
-      
-      expect(state.from).toEqual({
-        pathname: '/protected',
-        search: '',
-        hash: '',
-        state: null,
-      });
-    });
-  });
+			render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-  describe('Casos edge', () => {
-    test('maneja transición de loading a autenticado', () => {
-      const { rerender } = render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			const navigateElement = screen.getByTestId('navigate');
+			const state = JSON.parse(navigateElement.getAttribute('data-state') || '{}');
 
-      // Estado inicial: loading
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: true,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			expect(state.from).toEqual({
+				pathname: '/protected',
+				search: '',
+				hash: '',
+				state: null,
+			});
+		});
+	});
 
-      rerender(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+	describe('Casos edge', () => {
+		test('maneja transición de loading a autenticado', () => {
+			const { rerender } = render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      expect(screen.getByRole('generic')).toHaveClass('animate-spin');
+			// Estado inicial: loading
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: true,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      // Estado final: autenticado
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: true,
-        isLoading: false,
-        user: { id: '1', name: 'Test User', email: 'test@example.com' },
-        token: 'valid-token',
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			rerender(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      rerender(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			expect(screen.getByRole('generic')).toHaveClass('animate-spin');
 
-      expect(screen.getByTestId('protected-content')).toBeInTheDocument();
-    });
+			// Estado final: autenticado
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: true,
+				isLoading: false,
+				user: { id: '1', name: 'Test User', email: 'test@example.com' },
+				token: 'valid-token',
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-    test('maneja transición de loading a no autenticado', () => {
-      const { rerender } = render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			rerender(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      // Estado inicial: loading
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: true,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			expect(screen.getByTestId('protected-content')).toBeInTheDocument();
+		});
 
-      rerender(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+		test('maneja transición de loading a no autenticado', () => {
+			const { rerender } = render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      expect(screen.getByRole('generic')).toHaveClass('animate-spin');
+			// Estado inicial: loading
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: true,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-      // Estado final: no autenticado
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: false,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			rerender(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      rerender(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			expect(screen.getByRole('generic')).toHaveClass('animate-spin');
 
-      const navigateElement = screen.getByTestId('navigate');
-      expect(navigateElement).toBeInTheDocument();
-      expect(navigateElement).toHaveAttribute('data-to', '/login');
-    });
-  });
+			// Estado final: no autenticado
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: false,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-  describe('Accesibilidad', () => {
-    test('loading spinner es accesible', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: true,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			rerender(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			const navigateElement = screen.getByTestId('navigate');
+			expect(navigateElement).toBeInTheDocument();
+			expect(navigateElement).toHaveAttribute('data-to', '/login');
+		});
+	});
 
-      const spinner = screen.getByRole('generic');
-      expect(spinner).toHaveClass('animate-spin');
-    });
-  });
+	describe('Accesibilidad', () => {
+		test('loading spinner es accesible', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: true,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
 
-  describe('Props por defecto', () => {
-    test('usa valores por defecto cuando no se proporcionan props', () => {
-      mockUseAuth.mockReturnValue({
-        isAuthenticated: false,
-        isLoading: false,
-        user: null,
-        token: null,
-        login: jest.fn(),
-        logout: jest.fn(),
-        register: jest.fn(),
-        clearError: jest.fn(),
-        setLoading: jest.fn(),
-        checkAndRefreshToken: jest.fn(),
-        getAuthHeaders: jest.fn(),
-        isTokenExpired: jest.fn(),
-      });
+			render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
 
-      render(
-        <BrowserRouter>
-          <ProtectedRoute>
-            <TestComponent />
-          </ProtectedRoute>
-        </BrowserRouter>
-      );
+			const spinner = screen.getByRole('generic');
+			expect(spinner).toHaveClass('animate-spin');
+		});
+	});
 
-      const navigateElement = screen.getByTestId('navigate');
-      expect(navigateElement).toHaveAttribute('data-to', '/login'); // valor por defecto
-    });
-  });
+	describe('Props por defecto', () => {
+		test('usa valores por defecto cuando no se proporcionan props', () => {
+			mockUseAuth.mockReturnValue({
+				isAuthenticated: false,
+				isLoading: false,
+				user: null,
+				token: null,
+				login: jest.fn(),
+				logout: jest.fn(),
+				register: jest.fn(),
+				clearError: jest.fn(),
+				setLoading: jest.fn(),
+				checkAndRefreshToken: jest.fn(),
+				getAuthHeaders: jest.fn(),
+				isTokenExpired: jest.fn(),
+			});
+
+			render(
+				<BrowserRouter>
+					<ProtectedRoute>
+						<TestComponent />
+					</ProtectedRoute>
+				</BrowserRouter>
+			);
+
+			const navigateElement = screen.getByTestId('navigate');
+			expect(navigateElement).toHaveAttribute('data-to', '/login'); // valor por defecto
+		});
+	});
 });

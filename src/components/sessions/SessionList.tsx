@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ISessionDto } from '@/domain/session/session.interface';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
