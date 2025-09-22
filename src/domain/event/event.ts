@@ -48,8 +48,8 @@ const createEventState = (set: SetState<MyEvenState>): IEventStore => ({
 	},
 
 	setDeleteEvent: async (id: number) => {
-		const deletedEvent = await eventServices.deleteEvent(id);
-		set({ deleteEvent: deletedEvent });
+		await eventServices.deleteEvent(id);
+		set({ deleteEvent: null }); // O cualquier valor apropiado para indicar eliminación
 	},
 
 	setUpdateEvent: async (id: number, event: IEventDto) => {
@@ -63,7 +63,7 @@ interface IEventStore {
 	createEvent: object;
 	allevents: IPaginatedEventsResponse | null;
 	eventById: IEventDto | null;
-	deleteEvent: IEventDto | null;
+	deleteEvent: null;
 	currentFilters: IEventFilter | null;
 	// Función para cargar eventos con parámetros de paginación
 	setAllevents: (page?: number, size?: number) => Promise<void>;

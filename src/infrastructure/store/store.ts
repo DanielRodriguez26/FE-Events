@@ -1,34 +1,73 @@
 import create from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
-import { createHomeState, type IHomeStore } from '@domain/home/home';
-import { createAuthState, type IAuthStore } from '@domain/auth/auth';
-import { createEventState, type IEventStore } from '@/domain/event/event';
-import { createSpeakerState, type ISpeakerStore } from '@/domain/speaker/speaker';
-import { createEventRegistration, type IEventRegistrationStore } from '@/domain/event-registration/event-registration';
-import { createSessionState, type ISessionStore } from '@/domain/session/session';
+import {
+	createHomeSlice,
+	createAuthSlice,
+	createEventSlice,
+	createSpeakerSlice,
+	createEventRegistrationSlice,
+	createSessionSlice
+} from './slices';
 
 type TypeGlobalActions = {
 	clearStorage: () => void;
 };
 
-export type MyEvenState = TypeGlobalActions & 
-							IHomeStore & 
-							IAuthStore & 
-							IEventStore &
-							ISpeakerStore &
-							IEventRegistrationStore &
-							ISessionStore;
+// Tipo unificado para el estado global
+export type MyEvenState = TypeGlobalActions & {
+	// Home state
+	allHomeEvents: any;
+	setAllHomeEvents: (page?: number, size?: number, filters?: any) => Promise<void>;
+
+	// Auth state
+	user: any;
+	token: any;
+	refreshToken: any;
+	isAuthenticated: boolean;
+	isLoading: boolean;
+	error: any;
+	login: (credentials: any) => Promise<boolean>;
+	register: (credentials: any) => Promise<boolean>;
+	logout: () => void;
+	refreshTokenAction: () => Promise<boolean>;
+	clearError: () => void;
+	setLoading: (loading: boolean) => void;
+
+	// Event state
+	createEvent: any;
+	allevents: any;
+	eventById: any;
+	alleventssearch: any;
+	currentFilters: any;
+	deleteEvent: any;
+	setAllevents: (page?: number, size?: number) => Promise<void>;
+	setEventById: (id: number) => Promise<void>;
+	setEventSearch: (filter: any, page?: number, size?: number) => Promise<void>;
+	setCreateEvent: (event: any) => Promise<void>;
+	setDeleteEvent: (id: number) => Promise<void>;
+	setUpdateEvent: (id: number, event: any) => Promise<void>;
+
+	// Speaker state
+	speaker: any;
+
+	// Event Registration state
+	myregistrations: any;
+
+	// Session state
+	sessions: any;
+	currentSession: any;
+};
 
 const useStore = create<MyEvenState>()(
 	devtools(
 		persist(
 			set => ({
-				...createHomeState(set),
-				...createAuthState(set),
-				...createEventState(set),
-				...createSpeakerState(set),
-				...createEventRegistration(set),
-				...createSessionState(set),
+				...createHomeSlice(set),
+				...createAuthSlice(set),
+				...createEventSlice(set),
+				...createSpeakerSlice(set),
+				...createEventRegistrationSlice(set),
+				...createSessionSlice(set),
 				clearStorage: () => {
 					localStorage.removeItem('my-even-storage');
 				},

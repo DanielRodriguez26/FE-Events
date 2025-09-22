@@ -1,37 +1,33 @@
-import { get } from '../settings/http.service';
-import { MICROSERVICES } from '../settings/environment';
-import type { IPaginatedEventsResponse } from './home.interface';
+import type { IEventRepository } from '../ports/IEventRepository';
+import type { IPaginatedEventsResponse, IEventFilter } from '../event/event.interface';
 
-// Extracción de la URL del microservicio de eventos desde la configuración
-const { event: _event } = MICROSERVICES;
-const event = `${_event}`;
+// Servicio de dominio para la lógica de negocio de la página principal
+// Depende de la abstracción IEventRepository en lugar de detalles de infraestructura
+class HomeService {
+	constructor(private eventRepository: IEventRepository) {}
 
-// Función para obtener todos los eventos desde la API
-// Retorna una promesa con la respuesta paginada de eventos
-const getAllEvents = async (page: number = 1, size: number = 6): Promise<IPaginatedEventsResponse> => {
-	console.log('🔍 Intentando cargar eventos desde:', event, 'página:', page, 'tamaño:', size);
+	// Función para obtener todos los eventos desde el repositorio
+	// Retorna una promesa con la respuesta paginada de eventos
+	async getAllEvents(page: number = 1, size: number = 6, filters?: IEventFilter): Promise<IPaginatedEventsResponse> {
+		console.log('🔍 Intentando cargar eventos desde repositorio - página:', page, 'tamaño:', size);
 
-	try {
-		// Realiza la petición GET al endpoint de eventos con parámetros de paginación
-		const res = get<IPaginatedEventsResponse>({
-			url: `?page=${page}&size=${size}`, // Agregar parámetros de paginación
-			baseURL: event, // Usamos la URL completa del backend
-		});
-
-		// Espera la respuesta
-		const json = await res;
-		console.log('✅ Eventos cargados exitosamente:', json);
-		return json;
-	} catch (error) {
-		console.error('❌ Error al cargar eventos:', error);
-		throw error;
+		try {
+			// Utiliza el repositorio abstracto en lugar de llamadas HTTP directas
+			const result = filters
+				? await this.eventRepository.getEventsWithFilters(page, size, filters)
+				: await this.eventRepository.getAllEvents(page, size);
+			console.log('✅ Eventos cargados exitosamente:', result);
+			return result;
+		} catch (error) {
+			console.error('❌ Error al cargar eventos:', error);
+			throw error;
+		}
 	}
+}
+
+// Factory function para crear instancia del servicio con dependencias
+const createHomeService = (eventRepository: IEventRepository): HomeService => {
+	return new HomeService(eventRepository);
 };
 
-// Objeto que exporta todos los servicios del módulo home
-// Centraliza todas las funciones de comunicación con la API
-const homeServices = {
-	getAllEvents, // Función para obtener todos los eventos
-};
-
-export { homeServices };
+export { HomeService, createHomeService };
